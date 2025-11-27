@@ -1,0 +1,49 @@
+# Staging Environment Configuration
+# Pre-production environment with real data sources and validation
+
+environment: staging
+debug: false
+
+database:
+  url: ${DATABASE_URL}  # From environment variable
+  pool_size: 10
+  max_overflow: 20
+  echo: false
+
+redis:
+  url: ${REDIS_URL}
+  ttl_seconds: 300
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  secret_key: ${API_SECRET_KEY}
+  cors_origins:
+    - https://staging-dashboard.f1strategy.com
+  rate_limit_per_minute: 120
+  workers: 4
+
+model:
+  registry_path: /app/models/registry
+  inference_batch_size: 32
+  enable_cache: true
+  fallback_threshold: 0.6
+  model_timeout_seconds: 5
+
+data_pipeline:
+  ingestion_interval_seconds: 10
+  data_retention_days: 30
+  enable_mock_data: false
+  weather_api_key: ${WEATHER_API_KEY}
+  f1_data_api_key: ${F1_DATA_API_KEY}
+
+logging:
+  level: INFO
+  format: json
+  file_path: /var/log/f1_strategy/staging.log
+  enable_console: true
+
+monitoring:
+  sentry_dsn: ${SENTRY_DSN}
+  prometheus_port: 9090
+  enable_tracing: true

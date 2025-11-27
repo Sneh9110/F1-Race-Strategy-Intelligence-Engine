@@ -1,0 +1,194 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+venv/
+env/
+ENV/
+env.bak/
+venv.bak/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# pyenv
+.python-version
+
+# Environments
+.env
+.env.local
+.env.*.local
+*.env
+
+# Testing
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.tox/
+.nox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# MyPy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# Ruff
+.ruff_cache/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+*.log
+*.log.*
+
+# Data files (exclude raw/processed data but keep structure)
+data/raw/*
+!data/raw/.gitkeep
+data/processed/*
+!data/processed/.gitkeep
+data/features/*
+!data/features/.gitkeep
+data/backup/*
+!data/backup/.gitkeep
+data/fastf1_cache/*
+
+# Keep sample data
+!data/sample/
+
+# Model artifacts
+models/registry/*
+!models/registry/.gitkeep
+models/cache/*
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+*.onnx
+
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+frontend/.next/
+frontend/.nuxt/
+frontend/.vuepress/dist
+frontend/.cache/
+frontend/*.log
+frontend/.env.local
+frontend/.env.*.local
+
+# OS files
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor backups
+*~
+*.swp
+*.swo
+*.bak
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Documentation builds
+docs/_build/
+docs/.doctrees/
+site/
+
+# Docker
+.dockerignore
+
+# Kubernetes secrets
+k8s/secrets/
+*.secret.yaml
+
+# Terraform
+.terraform/
+*.tfstate
+*.tfstate.backup
+.terraform.lock.hcl
+
+# Monitoring
+prometheus_data/
+grafana_data/
+
+# Certificates
+*.pem
+*.key
+*.crt
+*.csr
+
+# Backups
+backups/
+*.backup
+*.dump
+
+# Performance profiling
+*.prof
+*.lprof
+
+# Compiled C extensions
+*.so
+
+# Distribution / packaging artifacts
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+
+# C extensions
+*.c
+*.cpp
+*.cc
+*.cxx

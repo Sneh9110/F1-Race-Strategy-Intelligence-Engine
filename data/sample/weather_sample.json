@@ -1,0 +1,157 @@
+{
+  "session_id": "2024_BAHRAIN_RACE",
+  "track_name": "Bahrain International Circuit",
+  "session_start_time": "2024-03-02T15:00:00Z",
+  "observations": [
+    {
+      "timestamp": "2024-03-02T15:00:00Z",
+      "track_temp_celsius": 45.2,
+      "air_temp_celsius": 28.5,
+      "humidity_percent": 48.3,
+      "wind_speed_kmh": 12.5,
+      "wind_direction_degrees": 185.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1013.2,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:05:00Z",
+      "track_temp_celsius": 45.8,
+      "air_temp_celsius": 28.7,
+      "humidity_percent": 47.8,
+      "wind_speed_kmh": 13.1,
+      "wind_direction_degrees": 188.5,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1013.1,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:10:00Z",
+      "track_temp_celsius": 46.3,
+      "air_temp_celsius": 29.0,
+      "humidity_percent": 47.2,
+      "wind_speed_kmh": 14.2,
+      "wind_direction_degrees": 192.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1013.0,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:15:00Z",
+      "track_temp_celsius": 46.9,
+      "air_temp_celsius": 29.3,
+      "humidity_percent": 46.5,
+      "wind_speed_kmh": 15.0,
+      "wind_direction_degrees": 195.5,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.9,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:20:00Z",
+      "track_temp_celsius": 47.5,
+      "air_temp_celsius": 29.6,
+      "humidity_percent": 45.9,
+      "wind_speed_kmh": 14.8,
+      "wind_direction_degrees": 198.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.8,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:25:00Z",
+      "track_temp_celsius": 48.0,
+      "air_temp_celsius": 29.8,
+      "humidity_percent": 45.3,
+      "wind_speed_kmh": 14.5,
+      "wind_direction_degrees": 200.5,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.7,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:30:00Z",
+      "track_temp_celsius": 48.2,
+      "air_temp_celsius": 30.0,
+      "humidity_percent": 44.8,
+      "wind_speed_kmh": 13.9,
+      "wind_direction_degrees": 203.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.6,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:35:00Z",
+      "track_temp_celsius": 47.8,
+      "air_temp_celsius": 29.9,
+      "humidity_percent": 45.1,
+      "wind_speed_kmh": 13.2,
+      "wind_direction_degrees": 205.5,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.5,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:40:00Z",
+      "track_temp_celsius": 47.3,
+      "air_temp_celsius": 29.7,
+      "humidity_percent": 45.6,
+      "wind_speed_kmh": 12.7,
+      "wind_direction_degrees": 208.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.4,
+      "track_condition": "DRY"
+    },
+    {
+      "timestamp": "2024-03-02T15:45:00Z",
+      "track_temp_celsius": 46.9,
+      "air_temp_celsius": 29.5,
+      "humidity_percent": 46.2,
+      "wind_speed_kmh": 12.1,
+      "wind_direction_degrees": 210.0,
+      "rainfall_mm": 0.0,
+      "pressure_hpa": 1012.3,
+      "track_condition": "DRY"
+    }
+  ],
+  "forecasts": [
+    {
+      "forecast_time": "2024-03-02T16:00:00Z",
+      "generated_at": "2024-03-02T15:45:00Z",
+      "predicted_track_temp_celsius": 46.5,
+      "predicted_air_temp_celsius": 29.3,
+      "predicted_rainfall_mm": 0.0,
+      "rain_probability_percent": 5.0,
+      "predicted_track_condition": "DRY",
+      "confidence_score": 0.92
+    },
+    {
+      "forecast_time": "2024-03-02T16:30:00Z",
+      "generated_at": "2024-03-02T15:45:00Z",
+      "predicted_track_temp_celsius": 45.8,
+      "predicted_air_temp_celsius": 29.0,
+      "predicted_rainfall_mm": 0.0,
+      "rain_probability_percent": 8.0,
+      "predicted_track_condition": "DRY",
+      "confidence_score": 0.85
+    },
+    {
+      "forecast_time": "2024-03-02T17:00:00Z",
+      "generated_at": "2024-03-02T15:45:00Z",
+      "predicted_track_temp_celsius": 45.0,
+      "predicted_air_temp_celsius": 28.7,
+      "predicted_rainfall_mm": 0.0,
+      "rain_probability_percent": 10.0,
+      "predicted_track_condition": "DRY",
+      "confidence_score": 0.78
+    }
+  ],
+  "summary": {
+    "average_track_temp": 47.1,
+    "average_air_temp": 29.4,
+    "peak_track_temp": 48.2,
+    "temperature_trend": "STABLE",
+    "conditions": "Hot and dry, typical Bahrain conditions. Track temperatures ideal for medium to hard compounds. No rain expected."
+  },
+  "notes": "Sample weather data demonstrating typical Bahrain GP conditions with hot track temperatures (45-48°C) and dry conditions. Shows gradual temperature changes over 45 minutes of race. No precipitation, moderate wind speeds from southwest direction."
+}

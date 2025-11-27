@@ -1,0 +1,209 @@
+[project]
+name = "f1-strategy-engine"
+version = "0.1.0"
+description = "Production-grade F1 Race Strategy Intelligence Engine with real-time optimization"
+authors = [
+    {name = "F1 Strategy Team", email = "team@f1strategy.example.com"}
+]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+keywords = ["f1", "formula1", "racing", "strategy", "machine-learning", "optimization"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
+
+dependencies = [
+    "pandas>=2.1.0",
+    "numpy>=1.24.0",
+    "fastapi>=0.104.0",
+    "pydantic>=2.5.0",
+    "scikit-learn>=1.3.2",
+    "xgboost>=2.0.0",
+    "psycopg2-binary>=2.9.9",
+    "redis>=5.0.1",
+    "uvicorn[standard]>=0.24.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.3",
+    "pytest-cov>=4.1.0",
+    "black>=23.12.0",
+    "isort>=5.13.2",
+    "ruff>=0.1.8",
+    "mypy>=1.7.1",
+]
+docs = [
+    "mkdocs>=1.5.3",
+    "mkdocs-material>=9.5.2",
+]
+telemetry = [
+    "fastf1>=3.2.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/yourusername/f1-strategy-engine"
+Documentation = "https://f1-strategy-engine.readthedocs.io"
+Repository = "https://github.com/yourusername/f1-strategy-engine"
+Issues = "https://github.com/yourusername/f1-strategy-engine/issues"
+
+[project.scripts]
+f1-setup-db = "scripts.setup_db:main"
+f1-download-data = "scripts.download_historical_data:main"
+f1-train-models = "scripts.train_models:main"
+f1-api = "api.main:run"
+
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["app", "data_pipeline", "models", "simulation", "decision_engine", "api"]
+
+[tool.pytest.ini_options]
+minversion = "7.0"
+testpaths = ["tests"]
+python_files = ["test_*.py", "*_test.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+addopts = [
+    "--strict-markers",
+    "--strict-config",
+    "--cov=app",
+    "--cov=data_pipeline",
+    "--cov=models",
+    "--cov-report=term-missing",
+    "--cov-report=html",
+]
+markers = [
+    "unit: Unit tests",
+    "integration: Integration tests",
+    "e2e: End-to-end tests",
+    "slow: Slow-running tests",
+    "requires_db: Tests requiring database",
+    "requires_redis: Tests requiring Redis",
+]
+
+[tool.coverage.run]
+source = ["app", "data_pipeline", "models", "simulation", "decision_engine", "api"]
+omit = [
+    "*/tests/*",
+    "*/test_*.py",
+    "*/__init__.py",
+    "*/venv/*",
+    "*/migrations/*",
+]
+
+[tool.coverage.report]
+precision = 2
+show_missing = true
+skip_covered = false
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:",
+    "if TYPE_CHECKING:",
+    "class .*\\bProtocol\\):",
+    "@(abc\\.)?abstractmethod",
+]
+
+[tool.black]
+line-length = 100
+target-version = ['py310', 'py311', 'py312']
+include = '\.pyi?$'
+extend-exclude = '''
+/(
+  # directories
+  \.eggs
+  | \.git
+  | \.hg
+  | \.mypy_cache
+  | \.tox
+  | \.venv
+  | build
+  | dist
+  | migrations
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 100
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+skip_glob = ["*/migrations/*", "*/venv/*"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
+select = [
+    "E",   # pycodestyle errors
+    "W",   # pycodestyle warnings
+    "F",   # pyflakes
+    "I",   # isort
+    "C",   # flake8-comprehensions
+    "B",   # flake8-bugbear
+    "UP",  # pyupgrade
+]
+ignore = [
+    "E501",  # line too long (handled by black)
+    "B008",  # do not perform function calls in argument defaults
+    "C901",  # too complex (let's be pragmatic)
+]
+exclude = [
+    ".git",
+    ".mypy_cache",
+    ".ruff_cache",
+    ".venv",
+    "venv",
+    "build",
+    "dist",
+    "migrations",
+]
+
+[tool.ruff.per-file-ignores]
+"__init__.py" = ["F401"]  # Allow unused imports in __init__.py
+
+[tool.mypy]
+python_version = "3.10"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+disallow_incomplete_defs = true
+check_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+warn_no_return = true
+strict_equality = true
+plugins = ["pydantic.mypy"]
+
+[[tool.mypy.overrides]]
+module = [
+    "fastf1.*",
+    "ergast.*",
+    "xgboost.*",
+    "lightgbm.*",
+    "catboost.*",
+]
+ignore_missing_imports = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+warn_untyped_fields = true

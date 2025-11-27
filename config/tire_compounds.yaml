@@ -1,0 +1,193 @@
+# Pirelli Tire Compound Configurations
+# Comprehensive tire characteristics for race strategy modeling
+
+# Slick Compounds (Dry Weather)
+slick_compounds:
+  C5:
+    designation: SOFT  # Softest compound
+    compound_code: C5
+    optimal_temp_range_celsius: [90, 110]
+    degradation_rate_per_lap: 0.12  # Seconds per lap
+    warmup_laps: 1
+    cliff_lap_threshold: 15  # Performance drops sharply
+    grip_level: 10  # Relative scale (1-10)
+    durability_laps: 20  # Maximum stint length
+    typical_usage: Qualifying, Sprint races, Short stints
+    performance_delta_vs_medium: -0.8  # Seconds per lap faster
+
+  C4:
+    designation: SOFT_OR_MEDIUM
+    compound_code: C4
+    optimal_temp_range_celsius: [85, 105]
+    degradation_rate_per_lap: 0.10
+    warmup_laps: 1
+    cliff_lap_threshold: 20
+    grip_level: 9
+    durability_laps: 25
+    typical_usage: Qualifying, Medium stint races
+    performance_delta_vs_medium: -0.6
+
+  C3:
+    designation: MEDIUM  # Most versatile
+    compound_code: C3
+    optimal_temp_range_celsius: [80, 100]
+    degradation_rate_per_lap: 0.08
+    warmup_laps: 2
+    cliff_lap_threshold: 28
+    grip_level: 8
+    durability_laps: 35
+    typical_usage: Race stints, Versatile compound
+    performance_delta_vs_medium: 0.0  # Baseline
+
+  C2:
+    designation: HARD_OR_MEDIUM
+    compound_code: C2
+    optimal_temp_range_celsius: [75, 95]
+    degradation_rate_per_lap: 0.06
+    warmup_laps: 3
+    cliff_lap_threshold: 35
+    grip_level: 7
+    durability_laps: 45
+    typical_usage: Long race stints, High degradation tracks
+    performance_delta_vs_medium: 0.4
+
+  C1:
+    designation: HARD  # Hardest compound
+    compound_code: C1
+    optimal_temp_range_celsius: [70, 90]
+    degradation_rate_per_lap: 0.04
+    warmup_laps: 4
+    cliff_lap_threshold: 45
+    grip_level: 6
+    durability_laps: 55
+    typical_usage: Very long stints, Hot conditions
+    performance_delta_vs_medium: 0.7
+
+# Wet Weather Compounds
+wet_compounds:
+  INTERMEDIATE:
+    compound_code: INTERMEDIATE
+    optimal_conditions: Damp to wet track
+    aquaplaning_threshold_mm: 2.0  # Max water depth
+    optimal_temp_range_celsius: [40, 100]
+    degradation_rate_per_lap: 0.15  # High on dry surface
+    warmup_laps: 2
+    grip_level_wet: 8
+    grip_level_dry: 4  # Poor on dry
+    durability_laps: 30
+    typical_usage: Drying track, Light rain
+    crossover_point_rainfall_mm: 1.5  # Switch to/from slicks
+
+  WET:
+    compound_code: WET
+    optimal_conditions: Heavy rain, standing water
+    aquaplaning_threshold_mm: 7.0  # Can handle deep water
+    optimal_temp_range_celsius: [25, 50]
+    degradation_rate_per_lap: 0.20  # Very high on dry
+    warmup_laps: 3
+    grip_level_wet: 9
+    grip_level_dry: 2  # Unusable on dry
+    durability_laps: 25
+    typical_usage: Heavy rain only
+    crossover_point_rainfall_mm: 3.0  # Switch to/from intermediate
+
+# Race Allocation Rules
+allocation_rules:
+  # Standard race weekend allocation
+  standard_allocation:
+    soft: 8  # Sets per driver
+    medium: 3
+    hard: 2
+    intermediate: 4
+    wet: 3
+
+  # Compound selection by track type
+  track_type_allocation:
+    street_circuits:
+      race_compounds: [C3, C4, C5]  # Softer compounds
+      reason: Lower speeds, less degradation
+
+    high_speed_circuits:
+      race_compounds: [C1, C2, C3]  # Harder compounds
+      reason: High energy, extreme degradation
+
+    standard_circuits:
+      race_compounds: [C2, C3, C4]  # Mixed compounds
+      reason: Balanced characteristics
+
+# Compound Strategy Guidelines
+strategy_guidelines:
+  one_stop:
+    ideal_compounds: [MEDIUM, HARD]
+    typical_stint_distribution: [50%, 50%]
+    risk_level: LOW
+    requires_conditions: [Low degradation, No safety cars]
+
+  two_stop:
+    ideal_compounds: [SOFT, MEDIUM, MEDIUM]
+    typical_stint_distribution: [30%, 35%, 35%]
+    risk_level: MEDIUM
+    requires_conditions: [High degradation, Overtaking possible]
+
+  three_stop:
+    ideal_compounds: [SOFT, SOFT, MEDIUM, MEDIUM]
+    typical_stint_distribution: [25%, 25%, 25%, 25%]
+    risk_level: HIGH
+    requires_conditions: [Very high degradation, Multiple safety cars]
+
+# Temperature Effects
+temperature_effects:
+  track_temp_impact:
+    cold_track_below_25c:
+      effect: Harder compounds struggle to reach optimal temperature
+      recommendation: Prefer softer compounds
+
+    optimal_track_25_to_45c:
+      effect: All compounds work as designed
+      recommendation: Follow standard strategy
+
+    hot_track_above_45c:
+      effect: Softer compounds overheat and degrade faster
+      recommendation: Prefer harder compounds, extend stints
+
+  ambient_conditions:
+    high_humidity_above_70:
+      effect: Track cools faster, grip improves
+      impact_on_degradation: -0.02  # Seconds per lap
+
+    low_humidity_below_30:
+      effect: Track heats up, increased wear
+      impact_on_degradation: 0.03
+
+# Compound Mixing Rules
+mixing_rules:
+  mandatory_compound_rule:
+    dry_race: Must use at least TWO different slick compounds
+    exceptions: Wet race (no compound requirement)
+
+  optimal_mixing:
+    soft_to_hard_jump: Not recommended (too large performance delta)
+    preferred_progression: [SOFT->MEDIUM->HARD] or [MEDIUM->HARD]
+    qualifying_to_race: Start on qualifying compound (Q2 tire rule)
+
+# Degradation Modifiers by Track
+track_modifiers:
+  silverstone:
+    degradation_multiplier: 1.5  # Extreme tire wear
+    compounds_recommended: [C1, C2, C3]
+
+  monaco:
+    degradation_multiplier: 0.6  # Low tire wear
+    compounds_recommended: [C3, C4, C5]
+
+  barcelona:
+    degradation_multiplier: 1.3  # High tire wear
+    compounds_recommended: [C1, C2, C3]
+
+  spa:
+    degradation_multiplier: 1.2  # High energy circuit
+    compounds_recommended: [C2, C3, C4]
+
+  monza:
+    degradation_multiplier: 0.8  # Low tire wear
+    compounds_recommended: [C2, C3, C4]

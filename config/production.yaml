@@ -1,0 +1,67 @@
+# Production Environment Configuration
+# High-availability production settings with strict security and monitoring
+
+environment: production
+debug: false
+
+database:
+  url: ${DATABASE_URL}  # High-availability cluster connection
+  pool_size: 20
+  max_overflow: 40
+  echo: false
+
+redis:
+  url: ${REDIS_URL}  # Redis Cluster
+  ttl_seconds: 600  # Longer cache for production
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  secret_key: ${API_SECRET_KEY}  # Must be set from environment
+  cors_origins:
+    - https://dashboard.f1strategy.com
+    - https://app.f1strategy.com
+  rate_limit_per_minute: 60  # Strict rate limiting
+  workers: 8  # More workers for production
+
+model:
+  registry_path: /app/models/registry
+  inference_batch_size: 64
+  enable_cache: true
+  fallback_threshold: 0.7  # Higher confidence required
+  model_timeout_seconds: 3  # Strict timeout
+
+data_pipeline:
+  ingestion_interval_seconds: 5  # Real-time ingestion
+  data_retention_days: 90  # Regulatory compliance
+  enable_mock_data: false
+  weather_api_key: ${WEATHER_API_KEY}
+  f1_data_api_key: ${F1_DATA_API_KEY}
+
+logging:
+  level: WARNING  # Only warnings and errors
+  format: json
+  file_path: /var/log/f1_strategy/production.log
+  enable_console: false  # Use centralized logging
+
+monitoring:
+  sentry_dsn: ${SENTRY_DSN}
+  prometheus_port: 9090
+  enable_tracing: true
+
+# Production-specific features
+health_check:
+  enabled: true
+  endpoint: /health
+  timeout_seconds: 5
+
+security:
+  require_authentication: true
+  jwt_expiration_minutes: 60
+  enable_https_only: true
+
+performance:
+  enable_query_caching: true
+  cache_warming_enabled: true
+  connection_timeout_seconds: 30
+  request_timeout_seconds: 60

@@ -1,0 +1,51 @@
+# Development Environment Configuration
+# Local development with mock data and debug features enabled
+
+environment: development
+debug: true
+
+database:
+  url: postgresql://postgres:password@localhost:5432/f1_strategy
+  pool_size: 5
+  max_overflow: 10
+  echo: true  # Show SQL queries in development
+
+redis:
+  url: redis://localhost:6379/0
+  ttl_seconds: 300
+
+api:
+  host: 0.0.0.0
+  port: 8000
+  secret_key: dev-secret-key-not-for-production
+  cors_origins:
+    - http://localhost:3000
+    - http://localhost:3001
+    - http://127.0.0.1:3000
+  rate_limit_per_minute: 1000  # High limit for development
+  workers: 1
+
+model:
+  registry_path: ./models/registry
+  inference_batch_size: 16
+  enable_cache: false  # Disable for testing
+  fallback_threshold: 0.5
+  model_timeout_seconds: 10
+
+data_pipeline:
+  ingestion_interval_seconds: 30  # Slower polling for development
+  data_retention_days: 7  # Short retention
+  enable_mock_data: true  # Use mock data sources
+  weather_api_key: null
+  f1_data_api_key: null
+
+logging:
+  level: DEBUG
+  format: text  # Human-readable for development
+  file_path: ./logs/development.log
+  enable_console: true
+
+monitoring:
+  sentry_dsn: null  # No error tracking in dev
+  prometheus_port: 9090
+  enable_tracing: false

@@ -1,0 +1,118 @@
+{
+  "session_id": "2024_MONACO_RACE",
+  "track_name": "Circuit de Monaco",
+  "events": [
+    {
+      "event_id": "2024_MONACO_SC_001",
+      "event_type": "SAFETY_CAR",
+      "start_lap": 12,
+      "end_lap": 15,
+      "start_time": "2024-05-26T13:25:30Z",
+      "end_time": "2024-05-26T13:31:45Z",
+      "reason": "Collision at Turn 4 - debris on track",
+      "affected_sectors": [1, 2],
+      "deployment_duration_seconds": 375.0,
+      "strategic_impact": {
+        "field_bunching_effect": 0.85,
+        "pit_window_created": true,
+        "drivers_who_pitted": [16, 4, 11, 63, 31],
+        "position_changes": 7,
+        "strategic_advantage_gained": [16, 11]
+      }
+    },
+    {
+      "event_id": "2024_MONACO_VSC_001",
+      "event_type": "VIRTUAL_SAFETY_CAR",
+      "start_lap": 28,
+      "end_lap": 30,
+      "start_time": "2024-05-26T13:48:15Z",
+      "end_time": "2024-05-26T13:52:30Z",
+      "reason": "Debris on track at Turn 7",
+      "affected_sectors": [2],
+      "deployment_duration_seconds": 255.0,
+      "strategic_impact": {
+        "field_bunching_effect": 0.45,
+        "pit_window_created": true,
+        "drivers_who_pitted": [1, 55, 23],
+        "position_changes": 3,
+        "strategic_advantage_gained": [1]
+      }
+    },
+    {
+      "event_id": "2024_MONACO_YELLOW_001",
+      "event_type": "YELLOW_FLAG",
+      "start_lap": 45,
+      "end_lap": 45,
+      "start_time": "2024-05-26T14:15:22Z",
+      "end_time": "2024-05-26T14:16:05Z",
+      "reason": "Car off track at Turn 16",
+      "affected_sectors": [3],
+      "deployment_duration_seconds": 43.0,
+      "strategic_impact": {
+        "field_bunching_effect": 0.10,
+        "pit_window_created": false,
+        "drivers_who_pitted": [],
+        "position_changes": 0,
+        "strategic_advantage_gained": []
+      }
+    }
+  ],
+  "incidents": [
+    {
+      "incident_id": "2024_MONACO_INC_001",
+      "lap_number": 12,
+      "turn_number": 4,
+      "sector_number": 1,
+      "drivers_involved": [14, 31],
+      "incident_type": "COLLISION",
+      "severity": "HIGH",
+      "marshalling_required": true,
+      "safety_car_triggered": true,
+      "description": "Alonso (#14) and Ocon (#31) made contact at Turn 4 (Sainte Devote). Ocon attempted to pass on the inside but insufficient space. Both cars sustained front wing damage. Ocon's car stopped on track at Turn 5, blocking racing line. Alonso continued with damage and pitted for repairs.",
+      "investigation_notes": "Stewards reviewed incident. Deemed racing incident with Ocon predominantly at fault. 5-second time penalty applied to Ocon (served during pit stop). No further action."
+    },
+    {
+      "incident_id": "2024_MONACO_INC_002",
+      "lap_number": 28,
+      "turn_number": 7,
+      "sector_number": 2,
+      "drivers_involved": [],
+      "incident_type": "DEBRIS",
+      "severity": "MEDIUM",
+      "marshalling_required": true,
+      "safety_car_triggered": false,
+      "description": "Carbon fiber debris (front wing endplate) detected on racing line at Turn 7 (Portier). Debris from earlier incident at Turn 4. VSC deployed to allow marshals to safely clear track. Debris removed within 2 laps.",
+      "investigation_notes": "Track clear confirmation from Race Control at 13:52:30. VSC ended, green flag racing resumed."
+    },
+    {
+      "incident_id": "2024_MONACO_INC_003",
+      "lap_number": 45,
+      "turn_number": 16,
+      "sector_number": 3,
+      "drivers_involved": [18],
+      "incident_type": "OFF_TRACK",
+      "severity": "LOW",
+      "marshalling_required": false,
+      "safety_car_triggered": false,
+      "description": "Stroll (#18) locked up into Antony Noghes (final corner) and ran wide onto escape road. No contact with barriers. Rejoined track safely, losing 2 positions. Yellow flags in sector 3 only. Track clear, no safety concerns.",
+      "investigation_notes": "No investigation necessary. Driver error under braking."
+    }
+  ],
+  "total_sc_laps": 4,
+  "total_vsc_laps": 3,
+  "total_red_flag_laps": 0,
+  "summary": {
+    "neutralized_laps_percent": 9.6,
+    "total_neutralized_time_seconds": 673.0,
+    "incidents_count": 3,
+    "high_severity_incidents": 1,
+    "position_changes_under_sc": 10,
+    "strategic_stops_during_sc": 8,
+    "high_risk_sectors": [
+      {"sector": 1, "incidents": 1, "turns": [4]},
+      {"sector": 2, "incidents": 1, "turns": [7]},
+      {"sector": 3, "incidents": 1, "turns": [16]}
+    ]
+  },
+  "notes": "Sample safety car event data from Monaco GP demonstrating three different event types: Full safety car deployment following collision with track blockage, Virtual safety car for debris clearance, and local yellow flag for off-track excursion. Monaco has characteristically high safety car probability (0.60) due to narrow street circuit layout. Events show strategic opportunities for pit stops during neutralization periods."
+}
