@@ -5,7 +5,7 @@ Defines schemas for safety car deployments, incidents, and track disruptions.
 """
 
 from pydantic import BaseModel, Field, field_validator
-from typing import List, Optional
+from typing import List, Optional, Dict
 from datetime import datetime
 from enum import Enum
 
