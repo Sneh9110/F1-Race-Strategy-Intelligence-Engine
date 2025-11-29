@@ -1,0 +1,276 @@
+# Feature Engineering Configuration
+# Defines thresholds, performance targets, and feature-specific settings
+
+# Global Settings
+global:
+  # Storage configuration
+  storage:
+    backend: "parquet"  # parquet, feather, csv
+    compression: "snappy"  # snappy, gzip, lz4, zstd
+    partitioning_scheme: "date"  # date, session, both
+    max_versions: 5  # Maximum feature versions to keep
+  
+  # Caching configuration
+  cache:
+    backend: "redis"  # redis, memory, none
+    default_ttl: 300  # Default cache TTL in seconds (5 minutes)
+    enable_distributed: true  # Enable distributed caching
+    redis_host: "localhost"
+    redis_port: 6379
+    redis_db: 0
+  
+  # Performance targets
+  performance:
+    batch_max_time: 3600  # Maximum batch computation time (1 hour)
+    streaming_max_latency: 0.2  # Maximum streaming latency (200ms)
+    parallel_workers: 4  # Default number of parallel workers
+    enable_profiling: false  # Enable performance profiling
+
+
+# Feature Category Settings
+features:
+  # Stint Features
+  stint:
+    summary:
+      min_laps_per_stint: 3  # Minimum laps to consider a valid stint
+      outlier_threshold_std: 3.0  # Standard deviations for outlier removal
+      pace_percentiles: [10, 25, 50, 75, 90]  # Percentiles to compute
+    
+    pace_evolution:
+      window_size: 5  # Rolling window for pace trends
+      min_laps_for_trend: 8  # Minimum laps to compute trend
+  
+  # Pace Features
+  pace:
+    delta:
+      reference_types: ["leader", "teammate", "session_avg"]
+      outlier_threshold_std: 3.0
+    
+    rolling:
+      window_sizes: [3, 5, 10]  # Rolling window options
+      min_periods: 2  # Minimum periods for valid window
+    
+    sector:
+      consistency_threshold: 0.5  # Threshold for consistency (seconds)
+      min_laps_per_sector: 5  # Minimum laps for sector analysis
+  
+  # Degradation Features
+  degradation:
+    slope:
+      min_laps: 5  # Minimum laps for regression
+      outlier_threshold_std: 2.5
+      max_r_squared_threshold: 0.3  # Minimum R² for valid regression
+    
+    exponential:
+      initial_guess_a: 80.0  # Initial guess for curve fitting
+      initial_guess_b: 0.05
+      max_iterations: 1000
+    
+    cliff_detection:
+      consecutive_laps_threshold: 3  # Laps above threshold for cliff
+      min_delta_threshold: 1.0  # Minimum delta to consider cliff (seconds)
+      lookback_window: 5  # Window for cliff detection
+    
+    anomaly:
+      z_score_threshold: 3.0  # Z-score for anomaly detection
+      rolling_window: 5
+  
+  # Pitstop Features
+  pitstop:
+    undercut:
+      track_specific_pit_loss: true  # Use track-specific pit loss
+      default_pit_loss: 23.0  # Default pit loss (seconds)
+      warmup_laps: 2  # Laps for tire warmup
+      warmup_penalty_per_lap: 0.3  # Seconds lost per warmup lap
+    
+    overcut:
+      fuel_effect_per_lap: 0.03  # Seconds gained per lap from fuel
+      tire_offset_max: 0.5  # Maximum tire age offset advantage
+    
+    pit_window:
+      optimal_window_pct: [0.4, 0.6]  # Optimal pit window (40-60% race distance)
+      early_stop_penalty: 1.0  # Penalty for pitting too early
+      late_stop_penalty: 2.0  # Penalty for pitting too late
+    
+    strategy_convergence:
+      convergence_threshold: 3.0  # Seconds for strategies to converge
+      min_laps_to_convergence: 10
+  
+  # Tire Features
+  tire:
+    warmup:
+      warmup_detection_threshold: 0.5  # Lap time improvement threshold
+      max_warmup_laps: 3  # Maximum laps for warmup
+    
+    dropoff:
+      cliff_threshold_pct: 0.05  # 5% degradation for cliff
+      min_laps_after_warmup: 5
+    
+    performance_window:
+      min_window_laps: 10  # Minimum laps for valid window
+      window_percentile: 0.9  # Percentile for window definition
+    
+    compound_comparison:
+      min_laps_per_compound: 5  # Minimum laps for comparison
+      normalize_by_track_evolution: true
+  
+  # Weather Features
+  weather:
+    adjusted_pace:
+      temperature_coefficient: 0.002  # Seconds per °C
+      rain_coefficient: 0.05  # Seconds per mm
+      wind_coefficient: 0.01  # Seconds per km/h
+      track_temp_weight: 0.7  # Weight for track temp vs air temp
+    
+    track_evolution:
+      rubber_buildup_rate: 0.05  # % improvement per session hour
+      max_evolution_factor: 0.98  # Maximum track evolution (2% improvement)
+    
+    weather_trend:
+      trend_window: 10  # Minutes for trend calculation
+      forecast_horizon: 30  # Minutes to forecast
+    
+    compound_suitability:
+      temp_ranges:
+        soft: [20, 45]  # °C
+        medium: [15, 35]
+        hard: [10, 30]
+      rain_threshold: 0.5  # mm for rain suitability
+  
+  # Safety Car Features
+  safety_car:
+    historical_probability:
+      base_probability: 0.15  # Base SC probability per race
+      lookback_races: 10  # Historical races to consider
+    
+    realtime_probability:
+      incident_weights:
+        crash: 0.8
+        mechanical: 0.4
+        debris: 0.3
+        weather: 0.5
+      proximity_decay: 5.0  # Laps for probability decay
+    
+    impact:
+      field_compression_factor: 0.9  # How much field compresses
+      tire_temp_loss_per_lap: 5.0  # °C lost per SC lap
+      strategy_disruption_weight: 0.6
+    
+    sector_risk:
+      high_risk_factors:
+        - "heavy_braking"
+        - "tight_corners"
+        - "high_speed"
+      sector_incident_lookback: 20  # Races for sector history
+  
+  # Traffic Features
+  traffic:
+    clean_air_penalty:
+      base_penalty: 0.4  # Base penalty (seconds)
+      gap_decay: 1.0  # Distance for exponential decay (seconds)
+      drs_benefit: -0.3  # DRS reduces penalty (seconds)
+    
+    traffic_density:
+      window_size: 5  # Cars within window
+      gap_threshold: 3.0  # Seconds for "traffic"
+    
+    lapping:
+      blue_flag_penalty: 0.2  # Seconds lost per blue flag
+      lapping_window: 3  # Laps to consider for lapping impact
+    
+    position_battle:
+      battle_gap_threshold: 1.0  # Seconds for position battle
+      overtake_window: 3  # Laps before/after for context
+  
+  # Telemetry Features
+  telemetry:
+    driver_style:
+      aggression_weights:
+        throttle: 0.4
+        brake: 0.4
+        steering: 0.2
+      consistency_window: 10  # Laps for consistency
+    
+    fuel_effect:
+      use_track_specific: true  # Use track-specific fuel effect
+      default_effect_per_kg: 0.03  # Seconds per kg
+    
+    tire_temperature:
+      optimal_ranges:
+        front_left: [90, 110]  # °C
+        front_right: [90, 110]
+        rear_left: [85, 105]
+        rear_right: [85, 105]
+      imbalance_threshold: 10.0  # °C difference for imbalance
+    
+    energy_management:
+      battery_deploy_modes: ["hotlap", "overtake", "balanced", "harvest"]
+      drs_effectiveness: 0.3  # Lap time benefit (seconds)
+      ers_deploy_per_lap: 4.0  # MJ per lap (typical)
+
+
+# Validation Rules
+validation:
+  # Data quality checks
+  quality_checks:
+    max_null_pct: 0.05  # Maximum 5% null values
+    max_outlier_pct: 0.02  # Maximum 2% outliers
+    min_sample_size: 10  # Minimum samples for valid feature
+  
+  # Feature ranges (for anomaly detection)
+  feature_ranges:
+    pace_delta: [-10.0, 10.0]  # Seconds
+    degradation_slope: [-2.0, 2.0]  # Seconds per lap
+    pit_loss: [15.0, 35.0]  # Seconds
+    tire_warmup_laps: [0, 5]  # Laps
+    sc_probability: [0.0, 1.0]  # Probability
+    traffic_penalty: [0.0, 5.0]  # Seconds
+  
+  # Consistency checks
+  consistency:
+    check_temporal_ordering: true  # Ensure features are temporally consistent
+    check_dependency_satisfaction: true  # Ensure dependencies are met
+    check_version_compatibility: true  # Check feature version compatibility
+
+
+# Monitoring & Alerts
+monitoring:
+  # Performance monitoring
+  performance:
+    log_slow_features: true  # Log features exceeding latency target
+    slow_feature_threshold: 1.0  # Seconds for batch, multiplier for streaming
+    track_cache_hit_rate: true
+    min_cache_hit_rate: 0.7  # 70% cache hit rate target
+  
+  # Quality monitoring
+  quality:
+    alert_on_high_nulls: true
+    alert_on_outliers: true
+    alert_on_validation_failures: true
+  
+  # Alerts
+  alerts:
+    enabled: true
+    channels: ["log", "email"]  # log, email, slack, pagerduty
+    email_recipients: ["ml-team@f1intelligence.com"]
+
+
+# Feature Lifecycle
+lifecycle:
+  # Deprecation policy
+  deprecation:
+    warning_period_days: 90  # Warn for 90 days before removal
+    supported_versions: 3  # Support last 3 major versions
+  
+  # Experimentation
+  experimental:
+    enable_experimental_features: false  # Enable experimental features
+    experimental_prefix: "exp_"  # Prefix for experimental features
+    auto_promote_threshold: 0.95  # Accuracy threshold for promotion
+  
+  # Cleanup
+  cleanup:
+    auto_cleanup_enabled: true
+    cleanup_interval_days: 30  # Run cleanup every 30 days
+    keep_recent_days: 90  # Keep features from last 90 days
+    archive_old_features: true  # Archive before deletion
