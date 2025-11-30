@@ -1,0 +1,70 @@
+# Ensemble Model Configuration
+# Combines XGBoost and LightGBM with weighted voting
+
+model:
+  name: "ensemble_degradation"
+  type: "ensemble"
+  version: "1.0.0"
+
+hyperparameters:
+  # Ensemble weights (can be optimized)
+  weights:
+    xgboost: 0.5
+    lightgbm: 0.5
+  
+  # Weight optimization
+  optimize_weights: true
+  weight_optimization_metric: "rmse"
+
+# Base model configs
+base_models:
+  xgboost:
+    max_depth: 6
+    learning_rate: 0.1
+    n_estimators: 200
+    subsample: 0.8
+    colsample_bytree: 0.8
+  
+  lightgbm:
+    max_depth: 8
+    learning_rate: 0.05
+    n_estimators: 300
+    num_leaves: 64
+    subsample: 0.8
+
+training:
+  # Data split
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  
+  # Cross-validation
+  n_folds: 5
+  stratify_by: ["tire_compound", "track_name"]
+  
+  # Optimization
+  optimize_hyperparams: true
+  n_trials: 30  # Fewer trials since optimizing weights
+  timeout: 3600
+  optimization_metric: "rmse"
+
+inference:
+  # Caching
+  use_cache: true
+  cache_ttl: 3600
+  
+  # Performance
+  max_latency_ms: 300  # Slightly higher for ensemble
+  batch_size: 32
+  
+  # Circuit breaker
+  failure_threshold: 5
+  recovery_timeout: 60
+  
+  # Fallback behavior
+  min_models_required: 1  # Can work with partial ensemble
+  aggregate_method: "weighted_average"
+
+fallback:
+  enabled: true
+  confidence_threshold: 0.3

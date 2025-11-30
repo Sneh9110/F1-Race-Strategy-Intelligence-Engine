@@ -1,0 +1,65 @@
+# XGBoost Model Configuration
+# Optimized for fast inference (<200ms)
+
+model:
+  name: "xgboost_degradation"
+  type: "xgboost"
+  version: "1.0.0"
+
+hyperparameters:
+  # Tree parameters
+  max_depth: 6
+  min_child_weight: 3
+  gamma: 0.1
+  
+  # Boosting parameters
+  learning_rate: 0.1
+  n_estimators: 200
+  subsample: 0.8
+  colsample_bytree: 0.8
+  
+  # Regularization
+  reg_alpha: 0.1
+  reg_lambda: 1.0
+  
+  # Performance
+  tree_method: "hist"  # Fast histogram-based method
+  n_jobs: -1
+  
+  # Training
+  objective: "reg:squarederror"
+  eval_metric: ["rmse", "mae"]
+  early_stopping_rounds: 20
+
+training:
+  # Data split
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  
+  # Cross-validation
+  n_folds: 5
+  stratify_by: ["tire_compound", "track_name"]
+  
+  # Optimization
+  optimize_hyperparams: true
+  n_trials: 50
+  timeout: 3600  # seconds
+  optimization_metric: "rmse"
+
+inference:
+  # Caching
+  use_cache: true
+  cache_ttl: 3600  # seconds
+  
+  # Performance targets
+  max_latency_ms: 200
+  batch_size: 32
+  
+  # Circuit breaker
+  failure_threshold: 5
+  recovery_timeout: 60
+
+fallback:
+  enabled: true
+  confidence_threshold: 0.3  # Use fallback if confidence < threshold

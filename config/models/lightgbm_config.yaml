@@ -1,0 +1,78 @@
+# LightGBM Model Configuration
+# Optimized for accuracy with categorical support
+
+model:
+  name: "lightgbm_degradation"
+  type: "lightgbm"
+  version: "1.0.0"
+
+hyperparameters:
+  # Tree parameters
+  max_depth: 8
+  num_leaves: 64
+  min_child_samples: 20
+  
+  # Boosting parameters
+  learning_rate: 0.05
+  n_estimators: 300
+  subsample: 0.8
+  colsample_bytree: 0.8
+  subsample_freq: 1
+  
+  # Regularization
+  reg_alpha: 0.1
+  reg_lambda: 0.5
+  
+  # Performance
+  boosting_type: "gbdt"
+  n_jobs: -1
+  verbose: -1
+  
+  # Training
+  objective: "regression"
+  metric: ["rmse", "mae"]
+  early_stopping_rounds: 30
+
+training:
+  # Data split
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  
+  # Cross-validation
+  n_folds: 5
+  stratify_by: ["tire_compound", "track_name"]
+  
+  # Categorical features
+  categorical_features:
+    - "tire_compound"
+    - "track_name"
+    - "driver_id"
+    - "weather_condition"
+  
+  # Optimization
+  optimize_hyperparams: true
+  n_trials: 50
+  timeout: 3600
+  optimization_metric: "rmse"
+
+inference:
+  # Caching
+  use_cache: true
+  cache_ttl: 3600
+  
+  # Uncertainty estimation
+  estimate_uncertainty: true
+  confidence_method: "leaf_variance"
+  
+  # Performance
+  max_latency_ms: 250
+  batch_size: 32
+  
+  # Circuit breaker
+  failure_threshold: 5
+  recovery_timeout: 60
+
+fallback:
+  enabled: true
+  confidence_threshold: 0.3

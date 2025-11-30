@@ -1,0 +1,108 @@
+# Training Configuration
+# Global training settings for all tire degradation models
+
+training:
+  # Model selection
+  default_model_type: "ensemble"  # "xgboost", "lightgbm", or "ensemble"
+  
+  # Data preparation
+  data:
+    min_laps_per_stint: 5
+    max_tire_age: 50
+    outlier_removal: true
+    outlier_threshold: 3.0  # std deviations
+    
+  # Data splits
+  splits:
+    train_ratio: 0.7
+    val_ratio: 0.15
+    test_ratio: 0.15
+    stratify_by:
+      - "tire_compound"
+      - "track_name"
+    random_seed: 42
+  
+  # Cross-validation
+  cross_validation:
+    enabled: true
+    n_folds: 5
+    shuffle: true
+    stratified: true
+  
+  # Hyperparameter optimization
+  optimization:
+    enabled: true
+    engine: "optuna"  # "optuna" or "grid_search"
+    n_trials: 50
+    timeout: 3600  # seconds
+    n_jobs: -1
+    
+    # Optimization objectives
+    primary_metric: "rmse"
+    secondary_metrics:
+      - "mae"
+      - "r2"
+    
+    # Early stopping for trials
+    pruner: "median"
+    n_startup_trials: 10
+    n_warmup_steps: 5
+  
+  # Model saving
+  model_output:
+    base_dir: "models/saved/tire_degradation"
+    save_top_k: 3
+    save_format: "json"  # Model format
+    version_format: "semantic"  # "semantic" or "timestamp"
+  
+  # Evaluation
+  evaluation:
+    metrics:
+      - "mae"
+      - "rmse"
+      - "r2"
+      - "mape"
+      - "usable_life_mae"
+      - "cliff_detection_accuracy"
+    
+    # Test set evaluation
+    run_on_test: true
+    generate_plots: true
+    plot_output_dir: "reports/model_evaluation"
+  
+  # Feature engineering
+  features:
+    use_feature_store: true
+    feature_selection: true
+    feature_selection_method: "importance"  # "importance" or "correlation"
+    max_features: null  # null = use all features
+    
+    # Computed features
+    compute_degradation_slope: true
+    compute_cliff_detection: true
+    compute_tire_warmup: true
+    compute_driver_style: true
+    compute_weather_adjusted_pace: true
+  
+  # Logging and monitoring
+  logging:
+    log_level: "INFO"
+    log_to_file: true
+    log_file: "logs/model_training.log"
+    
+    # MLflow integration
+    use_mlflow: false
+    mlflow_tracking_uri: "http://localhost:5000"
+    experiment_name: "tire_degradation"
+  
+  # Resource limits
+  resources:
+    max_memory_gb: 16
+    max_training_time_minutes: 120
+    early_stopping_patience: 20
+
+# Model-specific overrides
+model_configs:
+  xgboost: "config/models/xgboost_config.yaml"
+  lightgbm: "config/models/lightgbm_config.yaml"
+  ensemble: "config/models/ensemble_config.yaml"
