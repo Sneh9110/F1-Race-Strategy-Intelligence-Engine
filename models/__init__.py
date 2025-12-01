@@ -11,9 +11,21 @@ from models.tire_degradation import (
     LightGBMDegradationModel,
     EnsembleDegradationModel,
     DegradationPredictor,
-    ModelTrainer,
-    ModelRegistry,
-    FallbackHeuristics
+    ModelTrainer as DegradationModelTrainer,
+    ModelRegistry as DegradationModelRegistry,
+    FallbackHeuristics as DegradationFallbackHeuristics
+)
+
+# Lap time prediction models
+from models.lap_time import (
+    BaseLapTimeModel,
+    XGBoostLapTimeModel,
+    LightGBMLapTimeModel,
+    EnsembleLapTimeModel,
+    LapTimePredictor,
+    ModelTrainer as LapTimeModelTrainer,
+    ModelRegistry as LapTimeModelRegistry,
+    FallbackHeuristics as LapTimeFallbackHeuristics
 )
 
 __all__ = [
@@ -23,9 +35,19 @@ __all__ = [
     'LightGBMDegradationModel',
     'EnsembleDegradationModel',
     'DegradationPredictor',
-    'ModelTrainer',
-    'ModelRegistry',
-    'FallbackHeuristics',
+    'DegradationModelTrainer',
+    'DegradationModelRegistry',
+    'DegradationFallbackHeuristics',
+    
+    # Lap time prediction
+    'BaseLapTimeModel',
+    'XGBoostLapTimeModel',
+    'LightGBMLapTimeModel',
+    'EnsembleLapTimeModel',
+    'LapTimePredictor',
+    'LapTimeModelTrainer',
+    'LapTimeModelRegistry',
+    'LapTimeFallbackHeuristics',
 ]
 
 __version__ = '1.0.0'

@@ -1,0 +1,107 @@
+# Lap Time Model Training Configuration
+# Controls training pipeline, hyperparameter optimization, and evaluation
+
+training:
+  # Data preparation
+  data:
+    path: data/processed
+    min_samples: 1000
+    train_split: 0.7
+    val_split: 0.15
+    test_split: 0.15
+    stratify_by:
+      - track_name
+      - tire_compound
+    
+    # Data quality
+    outlier_z_threshold: 3.0
+    missing_threshold: 0.1
+    
+    # Data augmentation
+    augment_rare_conditions: true
+    safety_car_augmentation_ratio: 0.2
+
+  # Hyperparameter optimization
+  hyperparameter_optimization:
+    enabled: true
+    framework: optuna
+    n_trials: 50
+    sampler: TPESampler
+    seed: 42
+    
+    # Objective
+    objective: minimize
+    metric: rmse
+    
+    # Search space (model-specific ranges defined in model configs)
+    timeout_minutes: 120          # Max optimization time
+    early_stopping_trials: 10     # Stop if no improvement
+
+  # Cross-validation
+  cross_validation:
+    enabled: false                # Optional, time-consuming
+    n_folds: 5
+    shuffle: true
+    seed: 42
+
+  # Model selection
+  model_selection:
+    # Automatically select best model based on validation performance
+    auto_select: false
+    selection_metric: val_rmse
+    improvement_threshold: 0.01   # Min improvement to select new model
+
+# Evaluation configuration
+evaluation:
+  # Metrics to track
+  metrics:
+    - mae                         # Mean Absolute Error
+    - rmse                        # Root Mean Squared Error
+    - r2                          # R² score
+    - mape                        # Mean Absolute Percentage Error
+    - accuracy_0.5s               # Accuracy within 0.5s
+    - accuracy_1.0s               # Accuracy within 1.0s
+    - accuracy_2.0s               # Accuracy within 2.0s
+  
+  # Condition-specific metrics
+  by_condition: true              # Evaluate per traffic condition
+  by_track: true                  # Evaluate per track
+  by_compound: true               # Evaluate per tire compound
+  
+  # Visualization
+  generate_plots: true
+  plot_types:
+    - prediction_vs_actual
+    - residuals
+    - error_distribution
+    - error_by_condition
+  output_path: results/evaluation
+
+# Model registry
+registry:
+  path: models/registry/lap_time
+  versioning: semantic            # semantic or timestamp
+  auto_register: true             # Register after successful training
+  
+  # Aliases
+  default_alias: latest
+  deployment_aliases:
+    - production
+    - staging
+    - latest
+
+# Logging and monitoring
+logging:
+  level: INFO
+  format: '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+  log_file: logs/lap_time_training.log
+
+# Resources
+resources:
+  # Memory management
+  max_memory_gb: 16
+  chunk_size: 10000               # Process data in chunks
+  
+  # Parallelization
+  n_jobs: -1                      # Use all CPU cores
+  gpu_enabled: false              # No GPU required for current models

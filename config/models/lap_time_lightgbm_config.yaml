@@ -1,0 +1,50 @@
+# LightGBM Lap Time Model Configuration
+# Optimized for accuracy with uncertainty estimation
+
+model:
+  name: lap_time_lightgbm
+  version: "1.0.0"
+  type: lightgbm
+  description: "LightGBM model for accurate lap time predictions with uncertainty"
+
+hyperparameters:
+  # Core parameters
+  objective: regression
+  metric: rmse
+  max_depth: 8                    # Depth of trees (4-12)
+  learning_rate: 0.05             # Step size shrinkage (0.01-0.2)
+  n_estimators: 300               # Number of boosting rounds (100-500)
+  num_leaves: 64                  # Number of leaves (20-100)
+  
+  # Regularization
+  subsample: 0.8                  # Row sampling (0.6-1.0)
+  colsample_bytree: 0.8           # Column sampling (0.6-1.0)
+  min_child_samples: 20           # Minimum samples in leaf (10-50)
+  reg_alpha: 0.1                  # L1 regularization (0.0-1.0)
+  reg_lambda: 0.5                 # L2 regularization (0.0-2.0)
+  
+  # LightGBM specific
+  boosting_type: gbdt             # Gradient boosting decision tree
+  verbosity: -1                   # Silent mode
+
+# Quantile regression for uncertainty estimation
+uncertainty:
+  enabled: true
+  lower_percentile: 0.1           # 10th percentile
+  upper_percentile: 0.9           # 90th percentile
+  expected_coverage: 0.8          # Target coverage rate
+
+# Categorical features
+categorical_features:
+  - tire_compound_encoded
+  - track_encoded
+
+training:
+  early_stopping_rounds: 20
+  eval_metric: rmse
+  verbose: false
+
+performance:
+  target_latency_ms: 200
+  batch_size: 100
+  cache_predictions: true

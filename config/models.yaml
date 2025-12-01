@@ -32,6 +32,41 @@ tire_degradation:
     max_latency_ms: 200
     fallback_enabled: true
 
+# Lap Time Prediction Models
+lap_time:
+  enabled: true
+  default_model: "ensemble"
+  model_dir: "models/saved/lap_time"
+  
+  models:
+    xgboost:
+      config: "config/models/lap_time_xgboost_config.yaml"
+      enabled: true
+    
+    lightgbm:
+      config: "config/models/lap_time_lightgbm_config.yaml"
+      enabled: true
+    
+    ensemble:
+      config: "config/models/lap_time_ensemble_config.yaml"
+      enabled: true
+  
+  training:
+    config: "config/models/lap_time_training_config.yaml"
+    auto_retrain: false
+    retrain_schedule: "0 3 * * 0"  # Weekly on Sunday at 3 AM
+  
+  inference:
+    use_cache: true
+    cache_backend: "redis"
+    cache_ttl: 3600
+    max_latency_ms: 200
+    fallback_enabled: true
+    circuit_breaker:
+      enabled: true
+      failure_threshold: 5
+      recovery_timeout_s: 60
+
 # Future models (placeholders)
 strategy_optimization:
   enabled: false

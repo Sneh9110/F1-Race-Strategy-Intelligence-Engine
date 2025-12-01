@@ -1,0 +1,48 @@
+# Ensemble Lap Time Model Configuration
+# Combines XGBoost (speed) and LightGBM (accuracy)
+
+model:
+  name: lap_time_ensemble
+  version: "1.0.0"
+  type: ensemble
+  description: "Ensemble model combining XGBoost and LightGBM for optimal performance"
+
+ensemble:
+  # Base models
+  models:
+    - type: xgboost
+      config: lap_time_xgboost_config.yaml
+      default_weight: 0.4         # Optimized for speed
+    - type: lightgbm
+      config: lap_time_lightgbm_config.yaml
+      default_weight: 0.6         # Optimized for accuracy
+  
+  # Weight optimization
+  optimize_weights: true          # Optimize on validation set
+  weight_search_step: 0.1         # Grid search step size
+  
+  # Dynamic weighting
+  use_confidence_weighting: true  # Adjust weights based on confidence
+  agreement_threshold: 0.5        # Agreement boost if diff < 0.5s
+  disagreement_threshold: 2.0     # Disagreement penalty if diff > 2.0s
+
+training:
+  # Train base models in parallel
+  parallel_training: false        # Sequential for memory efficiency
+  shared_data: true               # Share training data between models
+  
+  # Validation
+  optimize_on_validation: true    # Optimize ensemble weights on val set
+  cross_validate_weights: false   # Additional CV for weight optimization
+
+performance:
+  target_latency_ms: 180          # Between XGBoost and LightGBM
+  batch_size: 100
+  cache_predictions: true
+  
+  # Fallback strategy
+  fallback_on_failure: true       # Use physics-based fallback if ensemble fails
+  circuit_breaker:
+    enabled: true
+    failure_threshold: 5
+    recovery_timeout_s: 60

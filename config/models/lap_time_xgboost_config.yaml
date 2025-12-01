@@ -1,0 +1,37 @@
+# XGBoost Lap Time Model Configuration
+# Optimized for speed with <150ms inference latency
+
+model:
+  name: lap_time_xgboost
+  version: "1.0.0"
+  type: xgboost
+  description: "XGBoost model for fast lap time predictions"
+
+hyperparameters:
+  # Core parameters
+  objective: reg:squarederror
+  max_depth: 6                    # Depth of trees (4-10)
+  learning_rate: 0.1              # Step size shrinkage (0.01-0.3)
+  n_estimators: 200               # Number of boosting rounds (100-500)
+  
+  # Regularization
+  subsample: 0.8                  # Row sampling (0.6-1.0)
+  colsample_bytree: 0.8           # Column sampling (0.6-1.0)
+  min_child_weight: 3             # Minimum sum of instance weight (1-10)
+  gamma: 0.1                      # Minimum loss reduction (0.0-0.5)
+  reg_alpha: 0.01                 # L1 regularization (0.0-1.0)
+  reg_lambda: 1.0                 # L2 regularization (0.0-2.0)
+  
+  # Performance optimization
+  tree_method: hist               # Fast histogram-based algorithm
+  predictor: cpu_predictor        # CPU optimized for low latency
+
+training:
+  early_stopping_rounds: 20
+  eval_metric: rmse
+  verbose: false
+
+performance:
+  target_latency_ms: 150
+  batch_size: 100
+  cache_predictions: true
