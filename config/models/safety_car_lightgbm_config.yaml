@@ -1,0 +1,22 @@
+# LightGBM config for Safety Car classification
+hyperparameters:
+  num_leaves: 31
+  learning_rate: 0.05
+  n_estimators: 150
+  max_depth: 6
+  min_child_samples: 20
+  subsample: 0.8
+  colsample_bytree: 0.8
+  class_weight: balanced
+  min_split_gain: 0.1
+  reg_alpha: 0.1
+  reg_lambda: 0.1
+  objective: binary
+  metric: [auc,binary_logloss]
+  boosting_type: gbdt
+training:
+  early_stopping_rounds: 20
+  verbose: 10
+  categorical_feature: [track_name,incident_severity]
+inference:
+  num_threads: 4

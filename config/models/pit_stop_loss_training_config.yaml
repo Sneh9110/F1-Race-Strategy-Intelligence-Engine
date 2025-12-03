@@ -1,0 +1,27 @@
+# Training config for Pit Stop Loss model
+data_splits:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  stratify: false
+  shuffle: true
+  random_state: 42
+optimization:
+  enabled: true
+  n_trials: 50
+  timeout: 3600
+  primary_metric: mae
+  direction: minimize
+  cv_folds: 5
+  cv_strategy: kfold
+feature_engineering:
+  use_pitstop_features: true
+  feature_selection: true
+  feature_importance_threshold: 0.01
+outlier_handling:
+  remove_outliers: true
+  outlier_threshold: 3.0
+  max_pit_loss: 40.0
+validation:
+  cross_validation: true
+  track_based_split: true

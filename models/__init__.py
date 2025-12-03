@@ -28,6 +28,30 @@ from models.lap_time import (
     FallbackHeuristics as LapTimeFallbackHeuristics
 )
 
+# Safety car probability models
+from models.safety_car import (
+    BaseSafetyCarModel,
+    XGBoostSafetyCarModel,
+    LightGBMSafetyCarModel,
+    EnsembleSafetyCarModel,
+    SafetyCarPredictor,
+    SafetyCarModelTrainer,
+    SafetyCarModelRegistry,
+    SafetyCarFallbackHeuristics
+)
+
+# Pit stop loss models
+from models.pit_stop_loss import (
+    BasePitStopLossModel,
+    XGBoostPitStopLossModel,
+    LightGBMPitStopLossModel,
+    EnsemblePitStopLossModel,
+    PitStopLossPredictor,
+    PitStopLossModelTrainer,
+    PitStopLossModelRegistry,
+    PitStopLossFallbackHeuristics
+)
+
 __all__ = [
     # Tire degradation
     'BaseDegradationModel',
@@ -48,6 +72,26 @@ __all__ = [
     'LapTimeModelTrainer',
     'LapTimeModelRegistry',
     'LapTimeFallbackHeuristics',
+    
+    # Safety car probability
+    'BaseSafetyCarModel',
+    'XGBoostSafetyCarModel',
+    'LightGBMSafetyCarModel',
+    'EnsembleSafetyCarModel',
+    'SafetyCarPredictor',
+    'SafetyCarModelTrainer',
+    'SafetyCarModelRegistry',
+    'SafetyCarFallbackHeuristics',
+    
+    # Pit stop loss
+    'BasePitStopLossModel',
+    'XGBoostPitStopLossModel',
+    'LightGBMPitStopLossModel',
+    'EnsemblePitStopLossModel',
+    'PitStopLossPredictor',
+    'PitStopLossModelTrainer',
+    'PitStopLossModelRegistry',
+    'PitStopLossFallbackHeuristics',
 ]
 
-__version__ = '1.0.0'
+__version__ = '1.1.0'

@@ -1,0 +1,17 @@
+# XGBoost config for Pit Stop Loss regression
+hyperparameters:
+  max_depth: 5
+  learning_rate: 0.1
+  n_estimators: 150
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_child_weight: 3
+  gamma: 0.1
+  objective: reg:squarederror
+  eval_metric: [rmse,mae]
+training:
+  early_stopping_rounds: 20
+  verbose: 10
+inference:
+  tree_method: hist
+  predictor: cpu_predictor

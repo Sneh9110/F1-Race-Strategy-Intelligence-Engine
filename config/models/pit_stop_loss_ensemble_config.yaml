@@ -1,0 +1,15 @@
+# Ensemble config for Pit Stop Loss
+ensemble:
+  models: [xgboost,lightgbm]
+  weights:
+    xgboost: 0.5
+    lightgbm: 0.5
+  aggregation_method: weighted_average
+  optimize_weights: true
+  optimization_metric: mae
+  partial_ensemble: true
+  min_confidence_threshold: 0.4
+training:
+  optimize_ensemble_weights: true
+  n_trials: 30
+  cv_folds: 5

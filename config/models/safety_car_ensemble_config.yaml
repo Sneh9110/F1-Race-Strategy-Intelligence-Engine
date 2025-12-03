@@ -1,0 +1,15 @@
+# Ensemble config for Safety Car
+ensemble:
+  models: [xgboost,lightgbm]
+  weights:
+    xgboost: 0.4
+    lightgbm: 0.6
+  aggregation_method: weighted_average
+  optimize_weights: true
+  optimization_metric: auc
+  partial_ensemble: true
+  min_confidence_threshold: 0.3
+training:
+  optimize_ensemble_weights: true
+  n_trials: 30
+  cv_folds: 5

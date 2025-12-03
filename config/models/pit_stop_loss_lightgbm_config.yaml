@@ -1,0 +1,23 @@
+# LightGBM config for Pit Stop Loss regression
+hyperparameters:
+  num_leaves: 31
+  learning_rate: 0.1
+  n_estimators: 150
+  max_depth: 6
+  min_child_samples: 20
+  subsample: 0.8
+  colsample_bytree: 0.8
+  min_split_gain: 0.01
+  reg_alpha: 0.1
+  reg_lambda: 0.1
+  objective: regression
+  metric: [rmse,mae]
+  boosting_type: gbdt
+training:
+  early_stopping_rounds: 20
+  verbose: 10
+  categorical_feature: [track_name,tire_compound_change]
+inference:
+  num_threads: 4
+quantile:
+  alpha: [0.1,0.5,0.9]

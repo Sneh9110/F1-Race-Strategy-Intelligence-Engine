@@ -1,0 +1,18 @@
+# XGBoost config for Safety Car classification
+hyperparameters:
+  max_depth: 5
+  learning_rate: 0.05
+  n_estimators: 150
+  subsample: 0.8
+  colsample_bytree: 0.8
+  scale_pos_weight: 3.0
+  min_child_weight: 3
+  gamma: 0.1
+  objective: binary:logistic
+  eval_metric: [auc,logloss]
+training:
+  early_stopping_rounds: 20
+  verbose: 10
+inference:
+  tree_method: hist
+  predictor: cpu_predictor

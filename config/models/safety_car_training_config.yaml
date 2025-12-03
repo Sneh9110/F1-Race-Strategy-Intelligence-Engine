@@ -1,0 +1,26 @@
+# Training config for Safety Car model
+data_splits:
+  train_ratio: 0.7
+  val_ratio: 0.15
+  test_ratio: 0.15
+  stratify: true
+  shuffle: true
+  random_state: 42
+optimization:
+  enabled: true
+  n_trials: 50
+  timeout: 3600
+  primary_metric: auc
+  direction: maximize
+  cv_folds: 5
+  cv_strategy: stratified
+feature_engineering:
+  use_safety_car_features: true
+  feature_selection: true
+  feature_importance_threshold: 0.01
+class_imbalance:
+  method: class_weights
+  smote_ratio: 0.5
+validation:
+  cross_validation: true
+  track_based_split: true
