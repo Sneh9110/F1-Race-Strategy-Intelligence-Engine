@@ -220,6 +220,104 @@ python scripts/train_pit_stop_loss.py train \
   --optimize --version 1.0.0 --alias production
 ```
 
+## 🎲 Race Simulation Engine (NEW)
+
+Production-grade Monte Carlo race simulator integrating all 4 ML models for comprehensive strategy analysis.
+
+### Features
+
+- **Single Simulation**: Deterministic race outcome (<500ms for 70-lap race)
+- **Strategy Tree Exploration**: Discover optimal pit strategies across 1-3 stops (<10s for 50 strategies)
+- **Monte Carlo Analysis**: Probabilistic outcome distribution (<5s for 1000 runs)
+- **What-If Scenarios**: Test 10 hypothetical situations (early SC, undercut, rain, etc.)
+- **Parallel Execution**: Multi-threaded strategy exploration and MC simulation
+- **Comprehensive Output**: Lap-by-lap results, stint analysis, probability distributions
+
+### Quick Start
+
+```python
+from simulation import RaceSimulator, SimulationInput, StrategyTreeExplorer, MonteCarloSimulator, WhatIfEngine
+
+# Initialize simulator (auto-loads all 4 ML models)
+simulator = RaceSimulator()
+
+# Run single simulation
+output = simulator.simulate_race(sim_input)
+print(f"Final Position: {output.results[0].final_position}")
+print(f"Race Time: {output.results[0].total_race_time:.2f}s")
+
+# Explore strategies
+explorer = StrategyTreeExplorer(simulator, max_strategies=50)
+rankings = explorer.explore_strategies(sim_input, max_pit_stops=2)
+best_strategy = rankings[0]
+print(f"Best: Pit laps {best_strategy.strategy.pit_laps}, Expected time: {best_strategy.expected_race_time:.2f}s")
+
+# Monte Carlo analysis
+from simulation.monte_carlo import MonteCarloConfig
+mc_sim = MonteCarloSimulator(simulator, MonteCarloConfig(num_runs=1000))
+mc_result = mc_sim.run_monte_carlo(sim_input, target_driver=1)
+print(f"Win Probability: {mc_result['statistics']['win_probability']:.1%}")
+
+# What-if scenario
+from simulation.what_if import ScenarioType
+engine = WhatIfEngine(simulator)
+scenario = engine.scenario_templates[ScenarioType.EARLY_SAFETY_CAR]
+comparison = engine.analyze_scenario(sim_input, scenario)
+print(f"Early SC impact: {comparison.position_delta:+d} positions, {comparison.time_delta:+.2f}s")
+```
+
+### CLI Interface
+
+```bash
+# Create input template
+python scripts/run_simulation.py create-input --track Monaco --total-laps 78 -o input.json
+
+# Run simulation modes
+python scripts/run_simulation.py simulate -i input.json --mode single
+python scripts/run_simulation.py simulate -i input.json --mode monte_carlo --mc-runs 1000
+python scripts/run_simulation.py simulate -i input.json --mode strategy_tree
+
+# Strategy exploration
+python scripts/run_simulation.py explore-strategies -i input.json --max-stops 3
+
+# What-if analysis
+python scripts/run_simulation.py list-scenarios
+python scripts/run_simulation.py what-if -i input.json --scenario early_safety_car
+```
+
+### Architecture
+
+```
+┌─────────────────────┐
+│  RaceSimulator      │  Main orchestrator
+│  - Load ML models   │  Integrates 4 predictors
+│  - Lap-by-lap sim   │  <500ms latency
+└──────────┬──────────┘
+           │
+    ┌──────┴──────────────────────────────┐
+    │                                      │
+┌───▼──────────────┐         ┌────────────▼──────────┐
+│ StrategyTree     │         │  MonteCarloSimulator  │
+│ - Generate nodes │         │  - Parallel runs      │
+│ - Prune branches │         │  - Noise injection    │
+│ - Undercut/over  │         │  - Convergence check  │
+└──────────────────┘         └───────────────────────┘
+           │                              │
+           └──────────┬───────────────────┘
+                      │
+            ┌─────────▼─────────┐
+            │   WhatIfEngine    │
+            │  - 10 scenarios   │
+            │  - Compare matrix │
+            │  - Recommendations│
+            └───────────────────┘
+```
+
+**Documentation**:
+- [docs/SIMULATION_GUIDE.md](docs/SIMULATION_GUIDE.md) - Comprehensive user guide
+- [docs/SIMULATION_MATH.md](docs/SIMULATION_MATH.md) - Mathematical formulas and theory
+- [tests/test_simulation/](tests/test_simulation/) - Full test suite with examples
+
 ## 🎯 Use Cases
 
 ### Tire Degradation Prediction
