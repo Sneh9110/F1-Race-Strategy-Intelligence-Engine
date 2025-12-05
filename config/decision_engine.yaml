@@ -1,0 +1,147 @@
+# Decision Engine Configuration
+
+# Performance settings
+performance:
+  max_latency_ms: 200
+  enable_cache: true
+  cache_ttl_seconds: 30
+  circuit_breaker_threshold: 5
+  circuit_breaker_timeout: 60
+  async_execution: true
+  max_workers: 4
+
+# Module settings
+modules:
+  pit_timing:
+    enabled: true
+    priority: 9
+    config:
+      tire_age_threshold: 0.9
+      degradation_threshold: 0.1
+      pace_drop_threshold: 0.5
+      pit_window_min_lap: 6
+      pit_window_max_offset: 5
+      undercut_gap_threshold: 3.0
+      sc_probability_threshold: 0.6
+  
+  strategy_conversion:
+    enabled: true
+    priority: 7
+    config:
+      degradation_deviation_threshold: 0.2
+      pace_gain_threshold: 0.3
+      position_delta_threshold: 2
+      time_delta_threshold: 5.0
+      monte_carlo_runs: 100
+  
+  offset_strategy:
+    enabled: true
+    priority: 6
+    config:
+      tire_age_delta_threshold: 5
+      pace_delta_threshold: 0.3
+      undercut_window_threshold: 3.0
+      sustained_advantage_laps: 5
+  
+  safety_car_decision:
+    enabled: true
+    priority: 10
+    config:
+      max_latency_ms: 100
+      tire_age_threshold: 15
+      recent_pit_threshold: 5
+      tire_life_threshold: 20
+      rival_pit_percentage_threshold: 0.5
+  
+  rain_strategy:
+    enabled: true
+    priority: 10
+    config:
+      track_temp_drop_threshold: 5.0
+      lap_time_increase_threshold: 2.0
+      heavy_rain_threshold: 5.0
+      weather_data_max_age: 60
+      crossover_point_confidence: 0.7
+  
+  pace_monitoring:
+    enabled: true
+    priority: 5
+    config:
+      pace_drop_threshold: 0.5
+      degradation_excess_threshold: 0.2
+      position_loss_threshold: 2
+      gap_increase_threshold: 0.3
+      sample_size_min: 5
+  
+  undercut_overcut:
+    enabled: true
+    priority: 8
+    config:
+      undercut_gap_threshold: 3.0
+      overcut_gap_threshold: 5.0
+      tire_age_delta_threshold: 5
+      tire_life_threshold: 10
+      undercut_timing_offset: 2
+      overcut_timing_offset: 4
+
+# Scoring thresholds
+scoring:
+  confidence:
+    green_threshold: 0.8
+    amber_threshold: 0.5
+    red_threshold: 0.5
+    floor: 0.1
+    ceiling: 1.0
+  
+  risk:
+    green_threshold: 0.3
+    amber_threshold: 0.7
+    red_threshold: 0.7
+    weights:
+      tire_age: 0.25
+      position: 0.25
+      gap: 0.20
+      safety_car: 0.15
+      weather: 0.15
+  
+  priority:
+    critical_boost: 1
+    non_urgent_penalty: 1
+
+# Conflict resolution
+conflict_resolution:
+  strategy: "weighted_voting"
+  tie_breaker: "safer_option"
+  min_confidence_delta: 0.1
+
+# Explainability
+explainability:
+  max_primary_factors: 5
+  max_rule_triggers: 10
+  include_model_contributions: true
+  generate_comparison_table: true
+  log_level: "INFO"
+
+# Caching
+caching:
+  enabled: true
+  backend: "redis"
+  ttl_realtime: 30
+  ttl_prerace: 300
+  key_prefix: "decision:"
+
+# Logging
+logging:
+  level: "INFO"
+  enable_trace: true
+  enable_audit: true
+  export_history: true
+  history_retention_days: 30
+
+# Integration
+integration:
+  simulation_engine: true
+  feature_store: true
+  ml_models: true
+  weather_api: true
+  telemetry_stream: true

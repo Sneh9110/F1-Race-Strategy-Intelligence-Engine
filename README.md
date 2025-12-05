@@ -318,6 +318,138 @@ python scripts/run_simulation.py what-if -i input.json --scenario early_safety_c
 - [docs/SIMULATION_MATH.md](docs/SIMULATION_MATH.md) - Mathematical formulas and theory
 - [tests/test_simulation/](tests/test_simulation/) - Full test suite with examples
 
+## 🧠 Decision Engine (NEW)
+
+Strategic brain that consumes simulation outputs and ML predictions to generate actionable race decisions.
+
+### Features
+
+- **7 Specialized Decision Modules**: Pit timing, strategy conversion, SC decisions, rain strategy, undercut/overcut, pace monitoring, offset strategy
+- **Rule-Based + ML Hybrid**: Combines domain expertise with ML predictions
+- **Conflict Resolution**: Weighted voting by priority and confidence
+- **Traffic Light System**: GREEN/AMBER/RED for quick visual assessment
+- **Explainability**: Detailed reasoning, alternatives, expected gains
+- **Performance**: <200ms latency, <100ms for SC decisions (time-critical)
+- **Async Support**: Parallel module execution for batch decisions
+
+### Quick Start
+
+```python
+from decision_engine import DecisionEngine, DecisionInput, DecisionContext
+
+# Initialize engine
+engine = DecisionEngine(config_path="config/decision_engine.yaml")
+
+# Create decision context
+context = DecisionContext(
+    session_id="2024_MONACO",
+    lap_number=25,
+    driver_number=44,
+    track_name="Monaco",
+    total_laps=78,
+    current_position=3,
+    tire_age=20,
+    tire_compound="MEDIUM",
+    fuel_load=85.0,
+    stint_number=2,
+    pit_stops_completed=1,
+    gap_to_ahead=2.5,
+    recent_lap_times=[90.5, 90.8, 91.2, 91.5, 91.8],
+)
+
+# Make decision
+output = engine.make_decision(DecisionInput(context=context))
+
+# Review recommendations
+for rec in output.recommendations:
+    print(f"{rec.action.value}: {rec.confidence_score:.1%} ({rec.traffic_light.value})")
+    print(f"Expected gain: {rec.expected_gain_seconds:+.1f}s")
+    print(f"Reasoning: {rec.reasoning.primary_factors}")
+```
+
+### CLI Interface
+
+```bash
+# Single decision
+python scripts/run_decision_engine.py decide \
+  --session-id 2024_MONACO \
+  --lap-number 25 \
+  --driver-number 44 \
+  --track-name Monaco
+
+# Batch decisions (all drivers)
+python scripts/run_decision_engine.py decide-batch \
+  --session-id 2024_MONACO \
+  --lap-number 25
+
+# Benchmark performance (verify <200ms target)
+python scripts/run_decision_engine.py benchmark --num-runs 1000
+
+# List decision modules
+python scripts/run_decision_engine.py list-modules
+```
+
+### Decision Modules
+
+**Priority 10 (Time-Critical):**
+- **Safety Car Decision** (<100ms): Pit under SC or stay out, rival analysis, position preservation
+- **Rain Strategy Decision**: Switch to inters/wets, track condition monitoring, timing optimization
+
+**Priority 9-8 (High):**
+- **Pit Timing Decision**: Pit NOW vs wait, tire cliff detection, pit window optimization
+- **Undercut/Overcut Decision**: Tactical opportunities, gap analysis, timing offsets
+
+**Priority 7-6 (Medium):**
+- **Strategy Conversion Decision**: Switch between 1/2/3-stop strategies, degradation deviation
+- **Offset Strategy Decision**: Different tire compounds vs rivals, pace differentials
+
+**Priority 5 (Advisory):**
+- **Pace Monitoring Decision**: Detect pace drops, recommend conservative/aggressive pace
+
+### Traffic Light System
+
+- 🟢 **GREEN**: High confidence (≥0.8) + Low risk (≤0.3) → Execute with confidence
+- 🟡 **AMBER**: Medium confidence/risk → Consider carefully, evaluate alternatives
+- 🔴 **RED**: Low confidence (<0.5) or High risk (>0.7) → Avoid unless critical
+
+### Architecture
+
+```
+┌───────────────────────────────────────────────────┐
+│           Decision Engine (Orchestrator)          │
+│  • Conflict Resolution  • Caching  • Ranking      │
+└─────────────────┬─────────────────────────────────┘
+                  │
+    ┌─────────────┴────────────────────┐
+    ▼                                  ▼
+┌─────────────────┐          ┌─────────────────┐
+│ Priority 10     │          │ Priority 9-5    │
+│ • SC Decision   │          │ • Pit Timing    │
+│ • Rain Strategy │          │ • Undercut      │
+│ (<100ms)        │          │ • Strategy      │
+└─────────────────┘          └─────────────────┘
+    │                                  │
+    └────────────┬─────────────────────┘
+                 ▼
+    ┌────────────────────────┐
+    │  Scoring & Explainer   │
+    │  • Confidence  • Risk  │
+    │  • Traffic Lights      │
+    └────────────────────────┘
+                 │
+                 ▼
+    ┌────────────────────────┐
+    │   Decision Output      │
+    │ • Top 3 Recommendations│
+    │ • Reasoning & Alts     │
+    └────────────────────────┘
+```
+
+**Documentation**:
+- [docs/decision_engine/DECISION_ENGINE_GUIDE.md](docs/decision_engine/DECISION_ENGINE_GUIDE.md) - Comprehensive user guide
+- [docs/decision_engine/ARCHITECTURE.md](docs/decision_engine/ARCHITECTURE.md) - System architecture
+- [config/decision_engine.yaml](config/decision_engine.yaml) - Configuration reference
+
 ## 🎯 Use Cases
 
 ### Tire Degradation Prediction
