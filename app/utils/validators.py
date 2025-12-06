@@ -287,6 +287,119 @@ def validate_gap_consistency(gap_to_leader: float, interval_to_ahead: float, pos
     return True
 
 
+def validate_numeric_range(
+    value: float,
+    min_value: Optional[float] = None,
+    max_value: Optional[float] = None,
+    field_name: str = "value"
+) -> Tuple[bool, Optional[str]]:
+    """
+    Validate that a numeric value is within specified bounds.
+
+    Args:
+        value: The numeric value to validate
+        min_value: Minimum allowed value (inclusive), None for no lower bound
+        max_value: Maximum allowed value (inclusive), None for no upper bound
+        field_name: Name of the field being validated (for error messages)
+
+    Returns:
+        Tuple of (is_valid, error_message)
+        - is_valid: True if value is within bounds, False otherwise
+        - error_message: None if valid, descriptive error message if invalid
+
+    Examples:
+        >>> validate_numeric_range(50, 0, 100, "temperature")
+        (True, None)
+        >>> validate_numeric_range(-10, 0, 100, "temperature")
+        (False, "temperature must be >= 0 (got -10)")
+    """
+    if min_value is not None and value < min_value:
+        return False, f"{field_name} must be >= {min_value} (got {value})"
+
+    if max_value is not None and value > max_value:
+        return False, f"{field_name} must be <= {max_value} (got {value})"
+
+    return True, None
+
+
+def validate_dataframe(
+    df,
+    required_columns: Optional[List[str]] = None,
+    min_rows: int = 1,
+    check_nulls: bool = True,
+    column_dtypes: Optional[dict] = None
+) -> Tuple[bool, Optional[str]]:
+    """
+    Validate pandas DataFrame structure and content.
+
+    Args:
+        df: pandas DataFrame to validate
+        required_columns: List of column names that must be present
+        min_rows: Minimum number of rows required (default 1)
+        check_nulls: If True, check for null values in required columns
+        column_dtypes: Optional dict mapping column names to expected dtypes
+
+    Returns:
+        Tuple of (is_valid, error_message)
+        - is_valid: True if DataFrame passes all checks, False otherwise
+        - error_message: None if valid, descriptive error message if invalid
+
+    Examples:
+        >>> import pandas as pd
+        >>> df = pd.DataFrame({'a': [1, 2, 3], 'b': [4, 5, 6]})
+        >>> validate_dataframe(df, required_columns=['a', 'b'])
+        (True, None)
+        >>> validate_dataframe(df, required_columns=['a', 'c'])
+        (False, "Missing required columns: ['c']")
+    """
+    import pandas as pd
+
+    # Check if input is a DataFrame
+    if not isinstance(df, pd.DataFrame):
+        return False, f"Expected pandas DataFrame, got {type(df).__name__}"
+
+    # Check minimum rows
+    if len(df) < min_rows:
+        return False, f"DataFrame has {len(df)} rows, minimum required is {min_rows}"
+
+    # Check for empty DataFrame
+    if df.empty and min_rows > 0:
+        return False, "DataFrame is empty"
+
+    # Check required columns
+    if required_columns:
+        missing_cols = set(required_columns) - set(df.columns)
+        if missing_cols:
+            return False, f"Missing required columns: {sorted(list(missing_cols))}"
+
+    # Check for null values in required columns
+    if check_nulls and required_columns:
+        for col in required_columns:
+            if col in df.columns and df[col].isnull().any():
+                null_count = df[col].isnull().sum()
+                return False, f"Column '{col}' contains {null_count} null values"
+
+    # Check column data types
+    if column_dtypes:
+        for col, expected_dtype in column_dtypes.items():
+            if col not in df.columns:
+                continue  # Already checked in required_columns
+
+            actual_dtype = df[col].dtype
+            # Handle string dtype comparison
+            if expected_dtype == 'object' or expected_dtype == str:
+                if actual_dtype != 'object':
+                    return False, f"Column '{col}' has dtype {actual_dtype}, expected object/string"
+            elif expected_dtype == 'numeric':
+                if not pd.api.types.is_numeric_dtype(actual_dtype):
+                    return False, f"Column '{col}' has dtype {actual_dtype}, expected numeric"
+            else:
+                if str(actual_dtype) != str(expected_dtype):
+                    return False, f"Column '{col}' has dtype {actual_dtype}, expected {expected_dtype}"
+
+    return True, None
+
+
 # Example usage
 if __name__ == "__main__":
     # Driver number validation

@@ -201,6 +201,11 @@ def get_settings() -> Settings:
     return Settings()
 
 
+# Module-level settings instance for backwards compatibility
+# This allows existing code to import: from config.settings import settings
+settings = get_settings()
+
+
 # Example usage
 if __name__ == "__main__":
     settings = get_settings()

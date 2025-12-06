@@ -1,6 +1,7 @@
 """Main FastAPI application entry point."""
 
 import time
+import uuid
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, Request, status
 from fastapi.middleware.cors import CORSMiddleware
@@ -21,7 +22,15 @@ from api.dependencies import (
 )
 from api.schemas.common import ErrorResponse, ErrorCode
 from api.routers.v1 import auth as auth_router, health, predictions, simulation, strategy
-from app.utils.logger import get_logger
+from app.utils.logger import get_logger, setup_logging, set_correlation_id
+from config.settings import settings
+
+# Setup logging once at module level
+setup_logging(
+    level=settings.logging.level,
+    format_type=settings.logging.format,
+    log_file=settings.logging.file
+)
 
 logger = get_logger(__name__)
 
@@ -34,6 +43,8 @@ async def lifespan(app: FastAPI):
     """Application lifespan manager for startup and shutdown."""
     # Startup
     logger.info("Starting F1 Strategy Intelligence API...")
+    logger.info(f"Environment: {settings.env}")
+    logger.info(f"Debug mode: {settings.debug}")
     
     try:
         # Initialize all predictors (singleton pattern via lru_cache)
@@ -186,20 +197,51 @@ async def general_exception_handler(request: Request, exc: Exception):
     )
 
 
-# Request/Response logging middleware
+# Request/Response logging middleware with correlation ID
+@app.middleware("http")
+async def correlation_id_middleware(request: Request, call_next):
+    """
+    Add correlation ID to each request and set it in the logging context.
+    
+    The correlation ID allows tracking all logs for a single request.
+    """
+    # Get or generate correlation ID
+    correlation_id = request.headers.get(
+        "X-Correlation-ID",
+        request.headers.get("X-Request-ID", str(uuid.uuid4()))
+    )
+    
+    # Set correlation ID in logging context for this request
+    set_correlation_id(correlation_id)
+    
+    # Store in request state for use in endpoints
+    request.state.correlation_id = correlation_id
+    request.state.request_id = correlation_id
+    
+    # Process request
+    response = await call_next(request)
+    
+    # Add correlation ID to response headers
+    response.headers["X-Correlation-ID"] = correlation_id
+    response.headers["X-Request-ID"] = correlation_id
+    
+    return response
+
+
 @app.middleware("http")
 async def log_requests(request: Request, call_next):
-    """Log all requests and responses."""
-    request_id = request.headers.get("X-Request-ID", f"req_{int(time.time()*1000)}")
+    """Log all requests and responses with timing."""
+    correlation_id = getattr(request.state, "correlation_id", "unknown")
     start_time = time.time()
     
     # Log request
     logger.info(
         f"→ {request.method} {request.url.path}",
         extra={
-            "request_id": request_id,
+            "correlation_id": correlation_id,
             "method": request.method,
             "path": request.url.path,
+            "query_params": str(request.query_params),
             "client_host": request.client.host if request.client else None,
         }
     )
@@ -214,14 +256,13 @@ async def log_requests(request: Request, call_next):
     logger.info(
         f"← {response.status_code} ({latency_ms:.2f}ms)",
         extra={
-            "request_id": request_id,
+            "correlation_id": correlation_id,
             "status_code": response.status_code,
             "latency_ms": latency_ms,
         }
     )
     
-    # Add custom headers
-    response.headers["X-Request-ID"] = request_id
+    # Add timing header
     response.headers["X-Response-Time"] = f"{latency_ms:.2f}ms"
     
     return response

@@ -14,6 +14,8 @@ from app.utils.validators import (
     validate_tire_compound,
     validate_lap_number,
     validate_sector_times,
+    validate_numeric_range,
+    validate_dataframe,
 )
 
 __all__ = [
@@ -27,4 +29,6 @@ __all__ = [
     "validate_tire_compound",
     "validate_lap_number",
     "validate_sector_times",
+    "validate_numeric_range",
+    "validate_dataframe",
 ]
