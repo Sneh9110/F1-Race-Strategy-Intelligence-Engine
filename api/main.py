@@ -20,9 +20,7 @@ from api.dependencies import (
     get_redis_client,
 )
 from api.schemas.common import ErrorResponse, ErrorCode
-from api.routers.v1 import auth as auth_router, health
-# TODO: Import other routers when created
-# from api.routers.v1 import predictions, simulation, strategy
+from api.routers.v1 import auth as auth_router, health, predictions, simulation, strategy
 from app.utils.logger import get_logger
 
 logger = get_logger(__name__)
@@ -231,10 +229,9 @@ async def log_requests(request: Request, call_next):
 
 # Include routers
 app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authentication"])
-# TODO: Include other routers when created
-# app.include_router(predictions.router, prefix="/api/v1/predict", tags=["Predictions"])
-# app.include_router(simulation.router, prefix="/api/v1/simulate", tags=["Simulation"])
-# app.include_router(strategy.router, prefix="/api/v1/strategy", tags=["Strategy"])
+app.include_router(predictions.router, prefix="/api/v1/predict", tags=["Predictions"])
+app.include_router(simulation.router, prefix="/api/v1/simulate", tags=["Simulation"])
+app.include_router(strategy.router, prefix="/api/v1/strategy", tags=["Strategy"])
 app.include_router(health.router, prefix="/api/v1", tags=["Health & Monitoring"])
 
 

@@ -191,23 +191,30 @@ api/
 
 ## Status
 
-**Current Version**: 0.1.0-alpha
+**Current Version**: 0.2.0-beta
 
-✅ Completed:
-- Core FastAPI application
-- Authentication (JWT + API key)
-- Health monitoring endpoints
-- Configuration management
-- Basic error handling
-- OpenAPI documentation
+✅ Completed (~70%):
+- Core FastAPI application with lifespan management
+- Authentication (JWT + API key) with bcrypt
+- Health monitoring endpoints (health, ready, live, metrics)
+- Configuration management with environment variables
+- Error handling and validation
+- OpenAPI documentation (auto-generated)
+- **Rate limiting middleware** (Redis-based sliding window)
+- **Prediction endpoints** (laptime, degradation, safety-car, pit-stop-loss)
+- **Simulation endpoints** (strategy, compare, monte-carlo)
+- **Strategy recommendation endpoints** (recommend, modules)
+- **Caching layer** (Redis with configurable TTLs)
+- **Comprehensive test suite** (unit, integration, load tests)
+- **Utilities** (cache manager, validators)
 
-⏳ In Progress:
-- Rate limiting middleware
-- Prediction endpoints
-- Simulation endpoints
-- Strategy recommendation endpoints
-- Caching layer
-- Comprehensive test suite
+⏳ Remaining (~30%):
+- Admin endpoints (retrain models, cache management)
+- Race state CRUD endpoints
+- Background task processing
+- Prometheus metrics integration
+- Docker deployment configuration
+- CI/CD pipeline setup
 
 ## License
 
