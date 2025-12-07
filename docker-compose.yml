@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # Frontend - React Dashboard
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    ports:
+      - "3000:80"
+    environment:
+      - VITE_API_BASE_URL=http://localhost:8000
+      - VITE_WS_URL=ws://localhost:8000
+    depends_on:
+      - api
+    networks:
+      - f1-network
+    restart: unless-stopped
+
+  # API - FastAPI Backend
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=${DATABASE_URL:-postgresql://f1user:f1pass@postgres:5432/f1db}
+      - REDIS_URL=${REDIS_URL:-redis://redis:6379/0}
+      - JWT_SECRET=${JWT_SECRET:-your-secret-key-change-in-production}
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - f1-network
+    restart: unless-stopped
+    volumes:
+      - ./logs:/app/logs
+
+  # Database - PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      - POSTGRES_USER=f1user
+      - POSTGRES_PASSWORD=f1pass
+      - POSTGRES_DB=f1db
+    ports:
+      - "5432:5432"
+    networks:
+      - f1-network
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    restart: unless-stopped
+
+  # Cache - Redis
+  redis:
+    image: redis:7-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - f1-network
+    volumes:
+      - redis-data:/data
+    command: redis-server --appendonly yes
+    restart: unless-stopped
+
+networks:
+  f1-network:
+    driver: bridge
+
+volumes:
+  postgres-data:
+  redis-data:

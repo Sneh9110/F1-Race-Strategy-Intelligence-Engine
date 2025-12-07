@@ -21,7 +21,7 @@ from api.dependencies import (
     get_redis_client,
 )
 from api.schemas.common import ErrorResponse, ErrorCode
-from api.routers.v1 import auth as auth_router, health, predictions, simulation, strategy
+from api.routers.v1 import auth as auth_router, health, predictions, simulation, strategy, race
 from app.utils.logger import get_logger, setup_logging, set_correlation_id
 from config.settings import settings
 
@@ -273,6 +273,7 @@ app.include_router(auth_router.router, prefix="/api/v1/auth", tags=["Authenticat
 app.include_router(predictions.router, prefix="/api/v1/predict", tags=["Predictions"])
 app.include_router(simulation.router, prefix="/api/v1/simulate", tags=["Simulation"])
 app.include_router(strategy.router, prefix="/api/v1/strategy", tags=["Strategy"])
+app.include_router(race.router, prefix="/api/v1/race", tags=["Race State"])
 app.include_router(health.router, prefix="/api/v1", tags=["Health & Monitoring"])
 
 

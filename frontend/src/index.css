@@ -1,0 +1,196 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  
+  body {
+    @apply bg-racing-black text-racing-white font-formula;
+  }
+}
+
+@layer components {
+  .card {
+    @apply bg-racing-darkgray rounded-lg border border-racing-gray p-4 shadow-lg;
+  }
+
+  .card-header {
+    @apply text-lg font-semibold mb-3 flex items-center justify-between;
+  }
+
+  .button-primary {
+    @apply bg-redbull hover:bg-redbull-dark text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed;
+  }
+
+  .button-secondary {
+    @apply bg-racing-gray hover:bg-racing-lightgray text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+  }
+
+  .input-field {
+    @apply bg-racing-gray border border-racing-lightgray text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-redbull focus:border-transparent;
+  }
+
+  .select-field {
+    @apply bg-racing-gray border border-racing-lightgray text-white px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-redbull focus:border-transparent cursor-pointer;
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-green {
+    @apply bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200;
+  }
+
+  .badge-yellow {
+    @apply bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200;
+  }
+
+  .badge-red {
+    @apply bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200;
+  }
+
+  .stat-card {
+    @apply bg-racing-gray rounded-lg p-4 border border-racing-lightgray;
+  }
+
+  .stat-label {
+    @apply text-gray-400 text-sm font-medium mb-1;
+  }
+
+  .stat-value {
+    @apply text-2xl font-bold text-white;
+  }
+
+  .loading-spinner {
+    @apply animate-spin h-5 w-5 border-2 border-t-transparent border-redbull rounded-full;
+  }
+
+  .sidebar-link {
+    @apply flex items-center space-x-3 px-4 py-3 text-gray-300 hover:bg-racing-gray hover:text-white rounded-lg transition-colors duration-150;
+  }
+
+  .sidebar-link-active {
+    @apply bg-racing-gray text-white border-l-4 border-redbull;
+  }
+
+  .chart-container {
+    @apply bg-racing-darkgray rounded-lg p-4 border border-racing-gray;
+  }
+
+  .table-header {
+    @apply bg-racing-gray text-left text-xs font-medium text-gray-400 uppercase tracking-wider px-4 py-3;
+  }
+
+  .table-row {
+    @apply border-b border-racing-gray hover:bg-racing-gray transition-colors duration-150;
+  }
+
+  .table-cell {
+    @apply px-4 py-3 text-sm;
+  }
+
+  .traffic-light-green {
+    @apply w-4 h-4 rounded-full bg-traffic-green shadow-lg shadow-green-500/50;
+  }
+
+  .traffic-light-amber {
+    @apply w-4 h-4 rounded-full bg-traffic-amber shadow-lg shadow-yellow-500/50;
+  }
+
+  .traffic-light-red {
+    @apply w-4 h-4 rounded-full bg-traffic-red shadow-lg shadow-red-500/50;
+  }
+
+  .tire-soft {
+    @apply bg-red-600 text-white;
+  }
+
+  .tire-medium {
+    @apply bg-yellow-400 text-black;
+  }
+
+  .tire-hard {
+    @apply bg-gray-100 text-black;
+  }
+
+  .tire-intermediate {
+    @apply bg-green-500 text-white;
+  }
+
+  .tire-wet {
+    @apply bg-blue-600 text-white;
+  }
+
+  /* Scrollbar styling */
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2 h-2;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-racing-gray rounded;
+  }
+
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-racing-lightgray rounded hover:bg-gray-500;
+  }
+
+  /* Skeleton loading animation */
+  .skeleton {
+    @apply animate-pulse bg-racing-gray rounded;
+  }
+
+  .skeleton-text {
+    @apply h-4 w-full skeleton;
+  }
+
+  .skeleton-title {
+    @apply h-6 w-2/3 skeleton mb-2;
+  }
+
+  .skeleton-card {
+    @apply h-32 w-full skeleton;
+  }
+
+  /* Glassmorphism effect */
+  .glass {
+    @apply bg-white bg-opacity-10 backdrop-blur-lg border border-white border-opacity-20;
+  }
+
+  /* Pulse animation for live indicators */
+  .pulse-live {
+    @apply animate-pulse-slow bg-red-500 rounded-full;
+  }
+}
+
+/* Custom animations */
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.slide-in {
+  animation: slideIn 0.3s ease-out;
+}
+
+/* Print styles */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+}
+
+/* Focus visible for accessibility */
+*:focus-visible {
+  outline: 2px solid theme('colors.redbull.DEFAULT');
+  outline-offset: 2px;
+}
