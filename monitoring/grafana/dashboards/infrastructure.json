@@ -1,0 +1,21 @@
+{
+  "title": "Infrastructure",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "CPU (node)",
+      "targets": [
+        { "expr": "100 - (avg(rate(node_cpu_seconds_total{mode=\\\"idle\\\"}[5m])) * 100)" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory Used",
+      "targets": [
+        { "expr": "node_memory_Active_bytes" }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "title": "Race Strategy",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Strategy Recommendations",
+      "targets": [
+        { "expr": "sum(rate(strategy_recommendations_total[1m]))" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Simulation Duration (s)",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(simulation_duration_seconds_bucket[5m])) by (le))" }
+      ]
+    }
+  ]
+}

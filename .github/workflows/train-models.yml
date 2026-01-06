@@ -1,0 +1,21 @@
+name: Train Models
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 3 * * 0'
+
+jobs:
+  train:
+    if: vars.ENABLE_SCHEDULED_TRAINING == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: docker/setup-buildx-action@v3
+      - name: Build training image
+        run: docker build -f models/Dockerfile -t f1/models:train .
+      - name: Run training
+        env:
+          LOG_LEVEL: INFO
+        run: |
+          docker run --rm f1/models:train

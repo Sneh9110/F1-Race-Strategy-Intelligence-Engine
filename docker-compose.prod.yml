@@ -1,0 +1,32 @@
+services:
+  api:
+    environment:
+      - LOG_LEVEL=${LOG_LEVEL:-INFO}
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 4G
+
+  frontend:
+    environment:
+      - VITE_API_BASE_URL=${VITE_API_BASE_URL}
+      - VITE_WS_URL=${VITE_WS_URL}
+
+  postgres:
+    ports: []
+
+  redis:
+    ports: []
+
+  grafana:
+    ports:
+      - "3001:3000"
+
+  prometheus:
+    ports:
+      - "9090:9090"
+
+  loki:
+    ports:
+      - "3100:3100"

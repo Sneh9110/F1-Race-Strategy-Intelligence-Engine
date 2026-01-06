@@ -1,0 +1,21 @@
+{
+  "title": "ML Models",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Prediction Latency (s)",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(model_inference_seconds_bucket[5m])) by (le, model))" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Fallback Rate",
+      "targets": [
+        { "expr": "sum(rate(model_fallback_total[5m]))" }
+      ]
+    }
+  ]
+}

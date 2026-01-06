@@ -1,0 +1,35 @@
+# syntax=docker/dockerfile:1
+
+FROM python:3.11-alpine
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1
+
+WORKDIR /app
+
+RUN apk add --no-cache curl tzdata busybox-suid \
+    && apk add --no-cache dcron supervisor
+
+COPY requirements.txt /app/requirements.txt
+COPY api/requirements.txt /app/api-requirements.txt
+
+RUN python -m venv /opt/venv \
+    && /opt/venv/bin/pip install --upgrade pip \
+    && /opt/venv/bin/pip install --no-cache-dir -r /app/requirements.txt -r /app/api-requirements.txt
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+COPY scripts/ /app/scripts/
+
+COPY scripts/cron/crontab /etc/crontabs/root
+COPY scripts/cron/run-cron.sh /app/scripts/cron/run-cron.sh
+
+RUN chmod +x /app/scripts/cron/run-cron.sh
+
+# supervisord runs cron + tails log to stdout
+COPY scripts/cron/supervisord.conf /etc/supervisord.conf
+
+HEALTHCHECK --interval=30s --timeout=5s --start-period=10s --retries=3 \
+  CMD pgrep crond >/dev/null || exit 1
+
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisord.conf"]

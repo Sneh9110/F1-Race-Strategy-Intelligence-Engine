@@ -1,0 +1,20 @@
+# Data ingestion every 5 minutes
+*/5 * * * * python /app/scripts/run_ingestion.py live
+
+# Historical data sync daily at 2 AM
+0 2 * * * python /app/scripts/run_ingestion.py historical --year 2024
+
+# Model retraining weekly on Sunday at 3 AM
+0 3 * * 0 python /app/scripts/train_tire_degradation.py
+
+# Feature computation every 10 minutes
+*/10 * * * * python /app/scripts/compute_features.py
+
+# Database cleanup daily at 4 AM
+0 4 * * * python /app/scripts/cleanup_old_data.py
+
+# Model registry cleanup weekly on Monday at 5 AM
+0 5 * * 1 python /app/scripts/cleanup_old_models.py
+
+# Health check every minute
+*/1 * * * * python /app/scripts/health_check.py

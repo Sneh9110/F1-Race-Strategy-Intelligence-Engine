@@ -1,0 +1,28 @@
+{
+  "title": "API Performance",
+  "schemaVersion": 38,
+  "version": 1,
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "Requests/sec",
+      "targets": [
+        { "expr": "sum(rate(http_requests_total[1m]))" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Latency p95 (s)",
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(http_request_duration_seconds_bucket[5m])) by (le))" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "5xx Error Rate",
+      "targets": [
+        { "expr": "sum(rate(http_requests_total{status=~\\\"5..\\\"}[2m]))" }
+      ]
+    }
+  ]
+}
