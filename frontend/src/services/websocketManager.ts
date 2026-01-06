@@ -182,7 +182,7 @@ export class WebSocketManager {
   private startHeartbeat(): void {
     this.stopHeartbeat();
     
-    this.heartbeatInterval = setInterval(() => {
+    this.heartbeatInterval = window.setInterval(() => {
       if (this.ws?.readyState === WebSocket.OPEN) {
         this.send({ type: 'ping', timestamp: Date.now() });
       }

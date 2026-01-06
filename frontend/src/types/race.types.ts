@@ -2,6 +2,13 @@
 
 import { TireCompound } from './predictions.types';
 
+export type WeatherCondition =
+  | 'DRY'
+  | 'DAMP'
+  | 'WET'
+  | 'RAIN'
+  | 'STORM';
+
 export interface LapData {
   lap_number: number;
   lap_time: number;
