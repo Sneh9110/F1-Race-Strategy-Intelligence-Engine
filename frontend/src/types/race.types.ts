@@ -1,6 +1,6 @@
 // Race State types
 
-import { TireCompound, WeatherCondition } from './predictions.types';
+import { TireCompound } from './predictions.types';
 
 export interface LapData {
   lap_number: number;

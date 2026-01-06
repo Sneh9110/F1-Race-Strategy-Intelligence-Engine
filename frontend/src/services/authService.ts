@@ -1,7 +1,7 @@
 // Authentication Service
 
 import apiClient from './apiClient';
-import { LoginRequest, TokenResponse, UserInfo, APIKeyRequest, APIKeyResponse } from '@/types/auth.types';
+import { TokenResponse, UserInfo, APIKeyResponse } from '@/types/auth.types';
 
 const TOKEN_KEY = 'f1_auth_token';
 const REFRESH_TOKEN_KEY = 'f1_refresh_token';
