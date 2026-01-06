@@ -4,7 +4,7 @@ from datetime import datetime
 from enum import Enum
 from typing import Dict, List, Optional, Any
 
-from pydantic import BaseModel, Field, validator, root_validator
+from pydantic import BaseModel, Field, validator, model_validator
 
 
 class DecisionAction(str, Enum):
@@ -155,14 +155,13 @@ class DecisionRecommendation(BaseModel):
             raise ValueError("Expected gain must be between -30 and +30 seconds")
         return v
     
-    @root_validator
-    def validate_sc_actions(cls, values):
+    @model_validator(mode='after')
+    def validate_sc_actions(self):
         """Validate safety car actions require SC active."""
-        action = values.get('action')
-        if action in [DecisionAction.PIT_UNDER_SC, DecisionAction.STAY_OUT_SC]:
+        if self.action in [DecisionAction.PIT_UNDER_SC, DecisionAction.STAY_OUT_SC]:
             # Note: Can't access context here, validation done in module
             pass
-        return values
+        return self
 
 
 class DecisionOutput(BaseModel):
